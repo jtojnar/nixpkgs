@@ -1,6 +1,5 @@
-{ stdenv, fetchzip, pythonPackages, docbook2x, libxslt, gnome_doc_utils
-, intltool, dbus_glib, gnome_python, dbus
-, hicolor_icon_theme
+{ stdenv, fetchFromGitHub, pythonPackages, docbook2x, libxslt, gnome_doc_utils
+, intltool, dbus_glib, gtk3, dbus, wrapGAppsHook
 }:
 
 # TODO: Add optional dependency 'wnck', for "workspace tracking" support. Fixes
@@ -9,19 +8,23 @@
 #   WARNING:root:Could not import wnck - workspace tracking will be disabled
 
 pythonPackages.buildPythonApplication rec {
-  name = "hamster-time-tracker-1.04";
+  name = "hamster-time-tracker";
+  version = "2.0";
 
-  src = fetchzip {
-    name = "${name}-src";
-    url = "https://github.com/projecthamster/hamster/archive/${name}.tar.gz";
-    sha256 = "1a85rcg561792kdyv744cgzw7mmpmgv6d6li1sijfdpqa1ninf8g";
+  src = fetchFromGitHub {
+    owner = "jtojnar";
+    repo = "hamster";
+    rev = "fixes";
+    sha256 = "1jgwkfdkhhsiqzmmgz8jdpkjpabd0lhxnikvim3xmh3g6a6jhyn5";
   };
 
+  nativeBuildInputs = [ docbook2x libxslt gnome_doc_utils intltool wrapGAppsHook ];
+
   buildInputs = [
-    docbook2x libxslt gnome_doc_utils intltool dbus_glib hicolor_icon_theme
+    gtk3 dbus_glib
   ];
 
-  propagatedBuildInputs = with pythonPackages; [ pygobject2 pygtk pyxdg gnome_python dbus-python ];
+  propagatedBuildInputs = with pythonPackages; [ pygobject3 pyxdg dbus-python ];
 
   configurePhase = ''
     python waf configure --prefix="$out"
@@ -35,6 +38,10 @@ pythonPackages.buildPythonApplication rec {
     python waf install
   '';
 
+  preFixup = ''
+    gappsWrapperArgs+=(--prefix PYTHONPATH : $PYTHONPATH)
+  '';
+ 
   # error: invalid command 'test'
   doCheck = false;
 

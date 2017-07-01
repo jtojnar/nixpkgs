@@ -14427,9 +14427,7 @@ with pkgs;
 
   hakuneko = callPackage ../tools/misc/hakuneko { };
 
-  hamster-time-tracker = callPackage ../applications/misc/hamster-time-tracker {
-    inherit (gnome2) gnome_python;
-  };
+  hamster-time-tracker = callPackage ../applications/misc/hamster-time-tracker { };
 
   hello = callPackage ../applications/misc/hello { };
 
