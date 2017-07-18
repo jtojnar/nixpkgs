@@ -1,5 +1,4 @@
 { config
-, pkgs
 , fetchurl
 , atspiSupport ? true, at_spi2_core ? null
 , gtk3
@@ -12,7 +11,6 @@
 , xorg
 , libxkbcommon
 , python3
-, python35Packages
 , stdenv
 , bash
 , intltool
@@ -20,9 +18,10 @@
 , gobjectIntrospection
 , gsettings_desktop_schemas
 , wrapGAppsHook
+, yelp
 }:
 
-python35Packages.buildPythonApplication rec {
+python3.pkgs.buildPythonApplication rec {
   name = "onboard-${version}";
   majorVersion = "1.4";
   version = "${majorVersion}.1";
@@ -46,12 +45,12 @@ python35Packages.buildPythonApplication rec {
     libxkbcommon
     intltool
     python3
-    python35Packages.pycairo
-    python35Packages.dbus-python
-    python35Packages.pygobject3
-    python35Packages.systemd
-    python35Packages.distutils_extra
-    python35Packages.pyatspi
+    python3.pkgs.pycairo
+    python3.pkgs.dbus-python
+    python3.pkgs.pygobject3
+    python3.pkgs.systemd
+    python3.pkgs.distutils_extra
+    python3.pkgs.pyatspi
     glib
   ];
 
@@ -75,16 +74,16 @@ python35Packages.buildPythonApplication rec {
 
     substituteInPlace  ./Onboard/LanguageSupport.py \
     --replace "/usr/share/xml/iso-codes" "${isocodes}/share/xml/iso-codes" \
-    --replace "/usr/bin/yelp" "${pkgs.yelp}/bin/yelp"
+    --replace "/usr/bin/yelp" "${yelp}/bin/yelp"
 
     substituteInPlace  ./Onboard/Indicator.py \
-    --replace   "/usr/bin/yelp" "${pkgs.yelp}/bin/yelp"
+    --replace   "/usr/bin/yelp" "${yelp}/bin/yelp"
 
     substituteInPlace  ./gnome/Onboard_Indicator@onboard.org/extension.js \
-    --replace "/usr/bin/yelp" "${pkgs.yelp}/bin/yelp"
+    --replace "/usr/bin/yelp" "${yelp}/bin/yelp"
 
     substituteInPlace  ./Onboard/SpellChecker.py \
-    --replace "/usr/share/hunspell" ${pkgs.hunspell}/bin/hunspell \
+    --replace "/usr/share/hunspell" ${hunspell}/bin/hunspell \
     --replace "/usr/lib" "$out/lib"
 
     substituteInPlace  ./data/org.onboard.Onboard.service  \
