@@ -137,6 +137,8 @@ stdenv.mkDerivation {
   patchPhase = ''
     sed -i -e '/^pref("app.update.channel",/d' defaults/pref/channel-prefs.js
     echo 'pref("app.update.channel", "non-existing-channel")' >> defaults/pref/channel-prefs.js
+    echo 'pref("app.update.auto", false)' >> defaults/pref/channel-prefs.js
+    echo 'pref("app.update.enabled", false)' >> defaults/pref/channel-prefs.js
   '';
 
   installPhase =
