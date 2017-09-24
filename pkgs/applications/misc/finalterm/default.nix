@@ -1,6 +1,6 @@
 { stdenv, fetchFromGitHub, makeWrapper
-, pkgconfig, cmake, libxml2, vala_0_26, intltool, libmx, gnome3, gtk3, gtk-doc
-, keybinder3, clutter-gtk, libnotify
+, pkgconfig, cmake, ninja, libxml2, vala, gobjectIntrospection, intltool, gnome3, gtk3, gtk-doc
+, keybinder3, libnotify, json-glib
 , libxkbcommon, xorg, udev
 , bashInteractive
 }:
@@ -8,21 +8,19 @@
 with stdenv.lib;
 
 stdenv.mkDerivation {
-  name = "finalterm-git-2014-11-15";
+  name = "finalterm-git-2018-03-02";
 
   src = fetchFromGitHub {
-    owner = "p-e-w";
-    repo = "finalterm";
-    rev = "39b078b2a96a5c3c9e74f92b1929f383d220ca8b";
-    sha256 = "14viln5nabr39lafg1lzf6ydibz1h5d9346drp435ljxc6wsh21i";
+    owner = "RedHatter";
+    repo = "finalterm-reborn";
+    rev = "274a7ea232317a6cfe4e6a25eb68db38a111eb14";
+    sha256 = "1rpzxlja5rgs2g4nk69gkfnd5s5l7sz77r907zw1sixva47fyrnb";
   };
 
-  nativeBuildInputs = [ pkgconfig cmake intltool makeWrapper ];
+  nativeBuildInputs = [ pkgconfig cmake ninja vala gobjectIntrospection intltool makeWrapper ];
   buildInputs = [
-    vala_0_26 gtk3 gnome3.gnome-common gnome3.libgee
-    gtk-doc clutter-gtk libmx keybinder3 libxml2 libnotify
-    xorg.libpthreadstubs xorg.libXdmcp xorg.libxshmfence
-    libxkbcommon
+    gtk3 gnome3.libgee
+    gtk-doc keybinder3 libxml2 libnotify json-glib
   ] ++ optionals stdenv.isLinux [ udev ];
 
   preConfigure = ''
