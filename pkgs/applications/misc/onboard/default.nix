@@ -12,13 +12,14 @@
 , libxkbcommon
 , python3
 , stdenv
-, bash
 , intltool
 , glib
 , gobjectIntrospection
 , gsettings_desktop_schemas
 , wrapGAppsHook
 , yelp
+, glibcLocales
+, psmisc
 }:
 
 python3.pkgs.buildPythonApplication rec {
@@ -30,47 +31,42 @@ python3.pkgs.buildPythonApplication rec {
     sha256 = "01cae1ac5b1ef1ab985bd2d2d79ded6fc99ee04b1535cc1bb191e43a231a3865";
   };
 
+  LC_ALL = "en_US.UTF-8";
+
   doCheck = false;
 
-  propagatedBuildInputs = [
+  propagatedBuildInputs = with python3.pkgs; [
+    pycairo
+    dbus-python
+    pygobject3
+    systemd
+    distutils_extra
+    pyatspi
+  ];
+
+  nativeBuildInputs = [ intltool wrapGAppsHook glibcLocales ];
+  buildInputs = [
+    python3
     gtk3
     libcanberra_gtk3
     libudev
-    bash
     hunspell
     isocodes
     pkgconfig
     xorg.libXtst
     xorg.libxkbfile
     libxkbcommon
-    intltool
-    python3
-    python3.pkgs.pycairo
-    python3.pkgs.dbus-python
-    python3.pkgs.pygobject3
-    python3.pkgs.systemd
-    python3.pkgs.distutils_extra
-    python3.pkgs.pyatspi
-    glib
-  ];
-
-  buildInputs = [
-    glib gobjectIntrospection gsettings_desktop_schemas gnome3.dconf wrapGAppsHook
+    glib gsettings_desktop_schemas gnome3.dconf
+    psmisc
   ] ++ stdenv.lib.optional atspiSupport at_spi2_core;
 
   preBuild = ''
-    rm -r Onboard/pypredict/attic
-
     substituteInPlace  ./scripts/sokSettings.py \
-    --replace "#!/usr/bin/python3" "" \
-    --replace "PYTHON_EXECUTABLE," "\"$out/bin/onboard-settings\"" \
-    --replace '"-cfrom Onboard.settings import Settings\ns = Settings(False)"' ""
+    --replace "PYTHON_EXECUTABLE," "\"${python3}/bin/python\"" \
 
     chmod -x ./scripts/sokSettings.py
 
-    for dir in ". ./Onboard/ ./scripts/ ./Onboard/test/ ./Onboard/pypredict/
-    ./Onboard/pypredict/lm/ ./Onboard/pypredict/test/ ./Onboard/pypredict/tools/";
-    do patchShebangs $dir; done
+    patchShebangs .
 
     substituteInPlace  ./Onboard/LanguageSupport.py \
     --replace "/usr/share/xml/iso-codes" "${isocodes}/share/xml/iso-codes" \
@@ -80,7 +76,8 @@ python3.pkgs.buildPythonApplication rec {
     --replace   "/usr/bin/yelp" "${yelp}/bin/yelp"
 
     substituteInPlace  ./gnome/Onboard_Indicator@onboard.org/extension.js \
-    --replace "/usr/bin/yelp" "${yelp}/bin/yelp"
+    --replace "/usr/bin/yelp" "${yelp}/bin/yelp" \
+    --replace "killall" "${psmisc}/bin/yelp"
 
     substituteInPlace  ./Onboard/SpellChecker.py \
     --replace "/usr/share/hunspell" ${hunspell}/bin/hunspell \
@@ -98,21 +95,10 @@ python3.pkgs.buildPythonApplication rec {
 
     substituteInPlace  ./Onboard/WordSuggestions.py \
     --replace "/usr/bin" "$out/bin"
-
-    substituteInPlace  ./setup.py \
-    --replace "/bin/bash" ${stdenv.shell}
-    substituteInPlace  ./Onboard/TextDomain.py \
-    --replace "/bin/bash" "${stdenv.shell}"
   '';
 
   postInstall = ''
-    mkdir -p $out/share/glib-2.0/schemas/ $out/lib/girepository-1.0
-    cp onboard-default-settings.gschema.override.example $out/share/glib-2.0/schemas/10_onboard-default-settings.gschema.override
-
     ${glib.dev}/bin/glib-compile-schemas $out/share/glib-2.0/schemas/
-
-    addToSearchPath GI_TYPELIB_PATH $out/lib/girepository-1.0
-    addToSearchPath XDG_DATA_DIRS $out/share
   '';
 
   meta = {
