@@ -3019,6 +3019,8 @@ with pkgs;
 
   motion = callPackage ../applications/video/motion { };
 
+  mkbib = callPackage ../applications/misc/mkbib { };
+
   mkcast = callPackage ../applications/video/mkcast { };
 
   mtail = callPackage ../servers/monitoring/mtail { };
