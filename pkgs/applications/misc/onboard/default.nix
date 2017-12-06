@@ -3,6 +3,7 @@
 , aspellWithDicts
 , at_spi2_core ? null
 , atspiSupport ? true
+, dbus
 , bash
 , glib
 , glibcLocales
@@ -23,6 +24,7 @@
 , python3
 , wrapGAppsHook
 , xorg
+, xvfb_run
 , yelp
 }:
 
@@ -44,7 +46,7 @@ in python3.pkgs.buildPythonApplication rec {
 
   # For tests
   LC_ALL = "en_US.UTF-8";
-  doCheck = false;
+
   checkInputs = [
     # for Onboard.SpellChecker.aspell_cmd doctests
     (aspellWithDicts (dicts: with dicts; [ en ]))
@@ -57,6 +59,8 @@ in python3.pkgs.buildPythonApplication rec {
     hunspellDicts.es-es
     hunspellDicts.it-it
 
+    xvfb_run
+    dbus.daemon
     python3.pkgs.nose
   ];
 
@@ -145,6 +149,12 @@ in python3.pkgs.buildPythonApplication rec {
     cp onboard-default-settings.gschema.override.example $out/share/glib-2.0/schemas/10_onboard-default-settings.gschema.override
 
     glib-compile-schemas $out/share/glib-2.0/schemas/
+  '';
+
+  checkPhase = ''
+    xvfb-run -s '-screen 0 800x600x24' dbus-run-session \
+      --config-file=${dbus.daemon}/share/dbus-1/session.conf \
+      python setup.py test
   '';
 
   meta = {
