@@ -2,16 +2,38 @@ mesonConfigurePhase() {
     runHook preConfigure
 
     if [ -z "$dontAddPrefix" ]; then
-        mesonFlags="--prefix=$prefix $mesonFlags"
+        mesonFlagsArray+=(
+            "--prefix" "$prefix"
+        )
     fi
 
-    # Build release by default.
-    mesonFlags="--buildtype=${mesonBuildType:-release} $mesonFlags"
+    # Configure the source and build directories
+    if [ -z "$mesonSrcDir" ]; then
+        mesonSrcDir="$(pwd)"
+    fi
+    if [ -z "$mesonBuildDir" ]; then
+        if [ -n "${createMesonBuildDir-true}" ]; then
+            mkdir -p "$TMPDIR"/build
+            cd "$TMPDIR"/build
+        fi
+        mesonBuildDir="$(pwd)"
+    fi
+
+    # Build always Release, to ensure optimisation flags
+    mesonFlagsArray+=(
+        "--buildtype" "${mesonBuildType-release}"
+    )
 
     echo "meson flags: $mesonFlags ${mesonFlagsArray[@]}"
 
-    meson build $mesonFlags "${mesonFlagsArray[@]}"
-    cd build
+    # Meson expect the local to be a unicode variant but
+    # our default builder local is ANSI compatible. We need this
+    # to be set during every stage of the build process since meson
+    # is called from the generated build files.
+    export LC_ALL="en_US.UTF-8"
+
+    meson $mesonFlags "${mesonFlagsArray[@]}" \
+        "${mesonSrcDir}" "${mesonBuildDir}"
 
     if ! [[ -v enableParallelBuilding ]]; then
         enableParallelBuilding=1
@@ -21,7 +43,17 @@ mesonConfigurePhase() {
     runHook postConfigure
 }
 
-if [ -z "$dontUseMesonConfigure" -a -z "$configurePhase" ]; then
+mesonFixup() {
+    rm -rf "$prefix"/{share,libexec}/installed-tests
+    rmdir "$prefix"/libexec >/dev/null 2>&1 || true
+    rmdir "$prefix"/share >/dev/null 2>&1 || true
+}
+
+if [ -n "${dontUseMesonConfigure}" -a -z "$configurePhase" ]; then
     setOutputFlags=
     configurePhase=mesonConfigurePhase
+    if [ -z "$checkTarget" ]; then
+        checkTarget="test"
+    fi
+    fixupOutputHooks+=(mesonFixup)
 fi

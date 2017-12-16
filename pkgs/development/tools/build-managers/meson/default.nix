@@ -1,4 +1,4 @@
-{ lib, python3Packages }:
+{ lib, python3Packages, glibcLocales }:
 python3Packages.buildPythonApplication rec {
   version = "0.43.0";
   pname = "meson";
@@ -8,6 +8,10 @@ python3Packages.buildPythonApplication rec {
     inherit pname version;
     sha256 = "0qn5hyzvam3rimn7g3671s1igj7fbkwdnf5nc8jr4d5swy25mq61";
   };
+
+  propagatedBuildInputs = [
+    glibcLocales
+  ];
 
   postFixup = ''
     pushd $out/bin
