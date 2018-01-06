@@ -61,7 +61,7 @@
         <listitem>
           <para>
             The "target platform" attribute is, unlike the other two attributes, not actually fundamental to the process of building software.
-            Instead, it is only relevant for compatability with building certain specific compilers and build tools.
+            Instead, it is only relevant for comparability with building certain specific compilers and build tools.
             It can be safely ignored for all other packages.
           </para>
           <para>
@@ -75,7 +75,7 @@
             An example of such a tool is LLVM.
           </para>
           <para>
-            Although the existance of a "target platfom" is arguably a historical mistake, it is a common one: examples of tools that suffer from it are GCC, Binutils, GHC and Autoconf.
+            Although the existence of a "target platform" is arguably a historical mistake, it is a common one: examples of tools that suffer from it are GCC, Binutils, GHC and Autoconf.
             Nixpkgs tries to avoid sharing in the mistake where possible.
             Still, because the concept of a target platform is so ingrained, it is best to support it as is.
           </para>
@@ -94,7 +94,7 @@
           <para>
             This is a two-component shorthand for the platform.
             Examples of this would be "x86_64-darwin" and "i686-linux"; see <literal>lib.systems.doubles</literal> for more.
-            This format isn't very standard, but has built-in support in Nix, such as the <varname>builtins.currentSystem</varname> impure string.
+            This format is not very standard, but has built-in support in Nix, such as the <varname>builtins.currentSystem</varname> impure string.
           </para>
         </listitem>
       </varlistentry>
@@ -116,7 +116,7 @@
           <para>
             This is a nix representation of a parsed LLVM target triple with white-listed components.
             This can be specified directly, or actually parsed from the <varname>config</varname>.
-            [Technically, only one need be specified and the others can be inferred, though the precision of inference may not be very good.]
+            [Technically, only one needs to be specified and the others can be inferred, though the precision of inference may not be very good.]
             See <literal>lib.systems.parse</literal> for the exact representation.
           </para>
         </listitem>
@@ -145,8 +145,8 @@
         <term><varname>platform</varname></term>
         <listitem>
           <para>
-            This is, quite frankly, a dumping ground of ad-hoc settings (it's an attribute set).
-            See <literal>lib.systems.platforms</literal> for examples—there's hopefully one in there that will work verbatim for each platform that is working.
+            This is, quite frankly, a dumping ground of ad-hoc settings (it is an attribute set).
+            See <literal>lib.systems.platforms</literal> for examples—there is hopefully one in there that will work verbatim for each platform that is working.
             Please help us triage these flags and give them better homes!
           </para>
         </listitem>
@@ -160,18 +160,18 @@
       In this section we explore the relationship between both runtime and buildtime dependencies and the 3 Autoconf platforms.
     </para>
     <para>
-      A runtime dependency between 2 packages implies that between them both the host and target platforms match.
+      A runtime dependency between two packages implies that between them both the host and target platforms match.
       This is directly implied by the meaning of "host platform" and "runtime dependency":
-      The package dependency exists while both packages are runnign on a single host platform.
+      The package dependency exists while both packages are running on a single host platform.
     </para>
     <para>
       A build time dependency, however, implies a shift in platforms between the depending package and the depended-on package.
-      The meaning of a build time dependency is that to build the depending package we need to be able to run the depended-on's package.
+      The meaning of a build time dependency is that to build the depending package we need to be able to run the depended-on package.
       The depending package's build platform is therefore equal to the depended-on package's host platform.
       Analogously, the depending package's host platform is equal to the depended-on package's target platform.
     </para>
     <para>
-      In this manner, given the 3 platforms for one package, we can determine the three platforms for all its transitive dependencies.
+      In this manner, given the three platforms for one package, we can determine the three platforms for all its transitive dependencies.
       This is the most important guiding principle behind cross-compilation with Nixpkgs, and will be called the <wordasword>sliding window principle</wordasword>.
     </para>
     <para>
@@ -201,7 +201,7 @@
   </section>
 
   <section>
-    <title>Cross packagaing cookbook</title>
+    <title>Cross packaging cookbook</title>
     <para>
       Some frequently problems when packaging for cross compilation are good to just spell and answer.
       Ideally the information above is exhaustive, so this section cannot provide any new information,
