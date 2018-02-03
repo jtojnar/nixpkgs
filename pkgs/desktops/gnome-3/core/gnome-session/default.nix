@@ -1,4 +1,4 @@
-{ fetchurl, stdenv, pkgconfig, gnome3, glib, dbus_glib, json_glib, upower
+{ fetchurl, stdenv, substituteAll, pkgconfig, gnome3, glib, dbus_glib, json_glib, upower
 , libxslt, intltool, makeWrapper, systemd, xorg, epoxy }:
 
 stdenv.mkDerivation rec {
@@ -13,7 +13,14 @@ stdenv.mkDerivation rec {
       epoxy
     ];
 
-  # FIXME: glib binaries shouldn't be in .dev!
+  patches = [
+    # FIXME: glib binaries shouldn't be in .dev!
+    (substituteAll {
+      src = ./fix-paths.patch;
+      gsettings = "${glib.dev}/bin/gsettings";
+    })
+  ];
+
   preFixup = ''
     for desktopFile in $(grep -rl "Exec=gnome-session" $out/share)
     do
@@ -21,7 +28,6 @@ stdenv.mkDerivation rec {
       sed -i "s,^Exec=gnome-session,Exec=$out/bin/gnome-session," $desktopFile
     done
     wrapProgram "$out/bin/gnome-session" \
-      --prefix PATH : "${glib.dev}/bin" \
       --prefix GI_TYPELIB_PATH : "$GI_TYPELIB_PATH" \
       --suffix XDG_DATA_DIRS : "$out/share:$GSETTINGS_SCHEMAS_PATH" \
       --suffix XDG_DATA_DIRS : "${gnome3.gnome_shell}/share" \
