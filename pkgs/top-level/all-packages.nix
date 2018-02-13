@@ -7750,6 +7750,8 @@ with pkgs;
 
   moby = callPackage ../development/tools/misc/moby { };
 
+  mpris-tester = libsForQt5.callPackage ../development/tools/misc/mpris-tester { };
+
   msgpack-tools = callPackage ../development/tools/msgpack-tools { };
 
   msitools = callPackage ../development/tools/misc/msitools { };
