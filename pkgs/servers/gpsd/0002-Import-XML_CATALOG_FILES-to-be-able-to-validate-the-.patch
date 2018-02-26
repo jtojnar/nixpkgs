@@ -15,14 +15,15 @@ diff --git a/SConstruct b/SConstruct
 index f73c87e..0d4b29d 100644
 --- a/SConstruct
 +++ b/SConstruct
-@@ -221,6 +221,7 @@ import_env = (
+@@ -263,7 +263,8 @@
+     'STAGING_DIR',     # Required by the OpenWRT and CeroWrt builds.
      'STAGING_PREFIX',  # Required by the OpenWRT and CeroWrt builds.
      'WRITE_PAD',       # So we can test WRITE_PAD values on the fly.
      'LD_LIBRARY_PATH', # Allows running 'scons check' without 'chrpath'
 +    'XML_CATALOG_FILES', # Enables validating the manual with 'xmlto' using nix build system
-     )
+ )
+ 
  envs = {}
- for var in import_env:
 -- 
 2.9.0
 

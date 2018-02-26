@@ -8,11 +8,21 @@
 # TODO: put the X11 deps behind a guiSupport parameter for headless support
 
 stdenv.mkDerivation rec {
-  name = "gpsd-3.16";
+  name = "gpsd-3.17";
+
+  # outputs = [ "out" "lib" "python" "dev" "man" ];
+
+  # temporarily redirect everything to $out for easier debugging
+  preConfigure = ''
+    export lib=$out
+    export python=$out
+    export dev=$out
+    export man=$out
+  '';
 
   src = fetchurl {
     url = "http://download-mirror.savannah.gnu.org/releases/gpsd/${name}.tar.gz";
-    sha256 = "0a90ph4qrlz5kkcz2mwkfk3cmwy9fmglp94znz2y0gsd7bqrlmq3";
+    sha256 = "0yp7hm6wxyb8mch98260v1jv8bl1xn5a8srxidzrjcaqzgndpq38";
   };
 
   nativeBuildInputs = [
@@ -26,27 +36,24 @@ stdenv.mkDerivation rec {
     libxslt libusb1
   ];
 
-  pythonPath = [
-    python2Packages.pygobject2
-    python2Packages.pygtk
+  pythonPath = with python2Packages; [
+    pygobject3 pycairo
   ];
 
   patches = [
     ./0001-Import-LD_LIBRARY_PATH-to-allow-running-scons-check-.patch
     ./0002-Import-XML_CATALOG_FILES-to-be-able-to-validate-the-.patch
-
-    # TODO: remove the patch with the next release
-    ./0001-Use-pkgconfig-for-dbus-library.patch
   ];
 
   # - leapfetch=no disables going online at build time to fetch leap-seconds
   #   info. See <gpsd-src>/build.txt for more info.
   buildPhase = ''
     patchShebangs .
-    sed -e "s|systemd_dir = .*|systemd_dir = '$out/lib/systemd/system'|" -i SConstruct
+    sed -e "s|systemd_dir = .*|systemd_dir = '$lib/lib/systemd/system'|" -i SConstruct
     scons prefix="$out" leapfetch=no gpsd_user=${gpsdUser} gpsd_group=${gpsdGroup} \
-        systemd=yes udevdir="$out/lib/udev" \
-        python_libdir="$out/lib/${python2Packages.python.libPrefix}/site-packages"
+        systemd=yes udevdir="$lib/lib/udev" libdir="$lib/lib" mandir="$man/share/man" \
+        pkgconfig="$dev/lib/pkgconfig" \
+        python_libdir="$python/lib/${python2Packages.python.libPrefix}/site-packages"
   '';
 
   checkPhase = ''
@@ -54,14 +61,13 @@ stdenv.mkDerivation rec {
     scons check
   '';
 
-  # TODO: the udev rules file and the hotplug script need fixes to work on NixOS
+  # # TODO: the udev rules file and the hotplug script need fixes to work on NixOS
   installPhase = ''
-    mkdir -p "$out/lib/udev/rules.d"
-    scons install udev-install
+    scons install
   '';
 
   postFixup = ''
-    wrapPythonProgramsIn $out/bin "$out $pythonPath"
+    wrapPythonProgramsIn $out/bin "$python $pythonPath"
   '';
 
   meta = with stdenv.lib; {
