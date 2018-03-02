@@ -13291,6 +13291,8 @@ with pkgs;
 
     netatop = callPackage ../os-specific/linux/netatop { };
 
+    openrazer = callPackage ../os-specific/linux/openrazer { withDrivers = true; };
+
     perf = callPackage ../os-specific/linux/kernel/perf.nix { };
 
     phc-intel = callPackage ../os-specific/linux/phc-intel { };
@@ -16776,6 +16778,8 @@ with pkgs;
   };
 
   openjump = callPackage ../applications/misc/openjump { };
+
+  # openrazer-daemon = callPackage ../os-specific/linux/openrazer { };
 
   openscad = callPackage ../applications/graphics/openscad {};
 

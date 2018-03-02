@@ -11653,6 +11653,8 @@ in {
 
   openpyxl = callPackage ../development/python-modules/openpyxl { };
 
+  openrazer = callPackage ../development/python-modules/openrazer { };
+
   ordereddict = buildPythonPackage rec {
     name = "ordereddict-${version}";
     version = "1.1";
