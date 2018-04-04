@@ -1,34 +1,25 @@
-{ stdenv, fetchFromGitHub, inkscape, imagemagick, potrace, svgo, scfbuild }:
+{ stdenv, fetchurl }:
 
-stdenv.mkDerivation rec {
-  name = "emojione-${version}";
-  version = "1.3";
+let
+  version = "3.1.2";
 
-  src = fetchFromGitHub {
-    owner = "eosrei";
-    repo = "emojione-color-font";
-    rev = "v${version}";
-    sha256 = "0hgs661g1j91lkafhrfx5ix7ymarh5bzcx34r2id6jl7dc3j41l3";
+  src = fetchurl {
+    url = "https://github.com/emojione/emojione-assets/releases/download/${version}/emojione-android.ttf";
+    sha256 = "0f8i68wnmx40ln1nsidb1fifqxfqz06f4qk58z4vqxiqhx1imyvf";
   };
+in stdenv.mkDerivation {
+  name = "emojione-${version}";
 
-  preBuild = ''
-    sed -i 's,SCFBUILD :=.*,SCFBUILD := scfbuild,' Makefile
-    # Shut up inkscape's warnings
-    export HOME="$NIX_BUILD_ROOT"
-  '';
-
-  nativeBuildInputs = [ inkscape imagemagick potrace svgo scfbuild ];
-
-  enableParallelBuilding = true;
+  phases = [ "installPhase" ];
 
   installPhase = ''
-    install -Dm755 build/EmojiOneColor-SVGinOT.ttf $out/share/fonts/truetype/EmojiOneColor-SVGinOT.ttf
+    install -Dm644 "${src}" "$out/share/fonts/truetype/emojione-android.ttf"
   '';
 
   meta = with stdenv.lib; {
-    description = "Open source emoji set";
-    homepage = http://emojione.com/;
-    license = licenses.cc-by-40;
+    description = "Emoji set";
+    homepage = https://emojione.com/;
+    license = licenses.unfree; # https://www.emojione.com/developers/free-license
     platforms = platforms.all;
     maintainers = with maintainers; [ abbradar ];
   };

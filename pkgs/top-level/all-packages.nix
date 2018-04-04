@@ -14235,9 +14235,7 @@ with pkgs;
 
   emacs-all-the-icons-fonts = callPackage ../data/fonts/emacs-all-the-icons-fonts { };
 
-  emojione = callPackage ../data/fonts/emojione {
-    inherit (nodePackages) svgo;
-  };
+  emojione = callPackage ../data/fonts/emojione { };
 
   encode-sans = callPackage ../data/fonts/encode-sans { };
 
