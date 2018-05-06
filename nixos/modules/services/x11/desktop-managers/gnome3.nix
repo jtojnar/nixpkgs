@@ -63,7 +63,7 @@ in {
 
           Note that this should be a last resort; patching the package is preferred (see GPaste).
         '';
-        apply = list: list ++ [ pkgs.gnome3.gnome-shell pkgs.gnome3.gnome-shell-extensions ];
+        apply = list: list ++ (with pkgs.gnome3; [ gnome-shell gnome-shell-extensions ] ++ optionals cfg.enableFlashback [ gnome-flashback gnome-panel gnome-applets metacity ]);
       };
 
       extraGSettingsOverrides = mkOption {
@@ -79,6 +79,8 @@ in {
       };
 
       debug = mkEnableOption "gnome-session debug messages";
+
+      enableFlashback = mkEnableOption "GNOME Flashback";
     };
 
     environment.gnome3.excludePackages = mkOption {
@@ -134,7 +136,7 @@ in {
     fonts.fonts = [ pkgs.dejavu_fonts pkgs.cantarell-fonts ];
 
     services.xserver.displayManager.gdm.enable = mkDefault true;
-    services.xserver.displayManager.extraSessionFilePackages = [ pkgs.gnome3.gnome-session ];
+    services.xserver.displayManager.extraSessionFilePackages = [ pkgs.gnome3.gnome-session ] ++ optional cfg.enableFlashback pkgs.gnome3.gnome-flashback;
 
     services.xserver.displayManager.sessionCommands = ''
       if test "$XDG_CURRENT_DESKTOP" = "GNOME"; then
