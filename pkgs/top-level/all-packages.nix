@@ -14700,6 +14700,8 @@ with pkgs;
 
   ubuntu_font_family = callPackage ../data/fonts/ubuntu-font-family { };
 
+  ubuntu-sounds = callPackage ../data/misc/ubuntu-sounds { };
+
   ucs-fonts = callPackage ../data/fonts/ucs-fonts { };
 
   uni-vga = callPackage ../data/fonts/uni-vga { };
