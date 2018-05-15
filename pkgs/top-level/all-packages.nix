@@ -12701,6 +12701,9 @@ with pkgs;
   };
 
   percona-server56 = callPackage ../servers/sql/percona/5.6.x.nix { };
+
+  permission-viewer = callPackage ../development/tools/misc/permission-viewer { };
+
   percona-server = percona-server56;
 
   riak = callPackage ../servers/nosql/riak/2.2.0.nix {
