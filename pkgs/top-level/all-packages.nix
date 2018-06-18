@@ -8717,6 +8717,8 @@ in
     guile = guile_1_8;
   };
 
+  gvpngate = callPackage ../applications/networking/gvpngate { };
+
   gwrap = callPackage ../development/tools/guile/g-wrap {
     guile = guile_2_0;
   };
