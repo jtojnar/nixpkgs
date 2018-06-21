@@ -1,19 +1,28 @@
-{ lib, stdenv, fetchurl, pkgconfig, glib, gdk_pixbuf, pango, cairo, libxml2, libgsf
-, bzip2, libcroco, libintl, darwin, rust, gnome3
+{ lib, stdenv, fetchurl, fetchpatch, pkgconfig, glib, gdk_pixbuf, pango, cairo, libxml2, libgsf
+, bzip2, libcroco, libintl, darwin, rust, gnome3, shared-mime-info
 , withGTK ? false, gtk3 ? null
 , vala, gobjectIntrospection }:
 
 let
   pname = "librsvg";
-  version = "2.42.4";
+  version = "2.42.5";
 in
 stdenv.mkDerivation rec {
   name = "${pname}-${version}";
 
   src = fetchurl {
     url = "mirror://gnome/sources/${pname}/${gnome3.versionBranch version}/${name}.tar.xz";
-    sha256 = "1qsd0j7s97ab5fzy5b5gix5b7hbw57cr46ia8pkcrr4ylsi80li2";
+    sha256 = "1v1m17r9jczz6hclg34j202ff3qr8wly51f3vq3jq0m2jaj53pfl";
   };
+
+  patches = [
+    # fix font reference in installed tests
+    # https://gitlab.gnome.org/GNOME/sysprof/merge_requests/2
+    (fetchpatch {
+      url = https://gitlab.gnome.org/GNOME/librsvg/commit/48b261eda6f48cdef47761cbb7ce835574c443fd.patch;
+      sha256 = "1fhnan5lmlz7nlzwcncqch180kzv71nbpcmb77ir8ih1m69z5jjp";
+    })
+  ];
 
   outputs = [ "out" "dev" "installedTests" ];
 
@@ -61,7 +70,11 @@ stdenv.mkDerivation rec {
         -i gdk-pixbuf-loader/librsvg.thumbnailer.in
   '';
 
-  doCheck = false; # fails 20 of 145 tests, very likely to be buggy
+  preCheck = ''
+    export XDG_DATA_DIRS=${shared-mime-info}/share:$XDG_DATA_DIRS
+  '';
+
+  doCheck = true;
 
   # Merge gdkpixbuf and librsvg loaders
   postInstall = ''

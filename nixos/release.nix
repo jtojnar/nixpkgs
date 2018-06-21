@@ -329,6 +329,7 @@ in rec {
   tests.kubernetes.rbac = callSubTestsOnMatchingSystems ["x86_64-linux"] tests/kubernetes/rbac.nix {};
   tests.latestKernel.login = callTest tests/login.nix { latestKernel = true; };
   tests.ldap = callTest tests/ldap.nix {};
+  tests.librsvg = callTest tests/librsvg.nix {};
   #tests.lightdm = callTest tests/lightdm.nix {};
   tests.login = callTest tests/login.nix {};
   #tests.logstash = callTest tests/logstash.nix {};
