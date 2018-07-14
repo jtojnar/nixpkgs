@@ -21630,6 +21630,8 @@ with pkgs;
 
   utf8proc = callPackage ../development/libraries/utf8proc { };
 
+  unicode-character-database = callPackage ../data/misc/unicode-character-database { };
+
   unicode-paracode = callPackage ../tools/misc/unicode { };
 
   unixcw = callPackage ../applications/misc/unixcw { };

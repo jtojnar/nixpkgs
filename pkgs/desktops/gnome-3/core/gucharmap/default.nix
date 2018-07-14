@@ -1,6 +1,6 @@
 { stdenv, intltool, fetchurl, pkgconfig, gtk3, defaultIconTheme
 , glib, desktop-file-utils, bash, appdata-tools
-, wrapGAppsHook, gnome3, itstool, libxml2
+, wrapGAppsHook, gnome3, itstool, libxml2, unicode-character-database
 , callPackage, unzip, gobjectIntrospection }:
 
 stdenv.mkDerivation rec {
@@ -27,9 +27,7 @@ stdenv.mkDerivation rec {
 
   buildInputs = [ gtk3 glib gnome3.gsettings-desktop-schemas defaultIconTheme ];
 
-  unicode-data = callPackage ./unicode-data.nix {};
-
-  configureFlags = "--with-unicode-data=${unicode-data}";
+  configureFlags = "--with-unicode-data=${unicode-character-database}/share/unicode";
 
   meta = with stdenv.lib; {
     homepage = https://wiki.gnome.org/Apps/Gucharmap;
