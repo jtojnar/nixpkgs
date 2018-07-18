@@ -16,6 +16,7 @@ stdenv.mkDerivation rec {
   meta = {
     description = "Generic spell checking library";
     homepage = http://www.abisource.com/enchant;
+    license = licenses.lgpl21Plus; # with extra provision for non-free checkers
     platforms = stdenv.lib.platforms.unix;
   };
 }
