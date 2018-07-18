@@ -12,17 +12,19 @@ in stdenv.mkDerivation rec {
     sha256 = "06aqg9asq2vqi9wr29bs4v8z2bf4manhbhfghf4nvw01y2zs0jvw";
   };
 
+  nativeBuildInputs = [ pkgconfig intltool ];
+  buildInputs = [ gtk3 librsvg pango atk gtk2 gdk_pixbuf gnome3.defaultIconTheme ];
+
   passthru = {
     updateScript = gnome3.updateScript {
       packageName = pname;
     };
   };
 
-  nativeBuildInputs = [ pkgconfig intltool ];
-  buildInputs = [ gtk3 librsvg pango atk gtk2 gdk_pixbuf gnome3.defaultIconTheme ];
-
   meta = with stdenv.lib; {
-    platforms = platforms.linux;
+    description = "Themes and theme-y tidbits that don’t really fit in anywhere else, or deserve their own module";
+    license = licenses.lgpl21Plus;
     maintainers = gnome3.maintainers;
+    platforms = platforms.linux;
   };
 }
