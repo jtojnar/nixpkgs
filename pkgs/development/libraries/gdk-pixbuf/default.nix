@@ -113,6 +113,7 @@ stdenv.mkDerivation rec {
   meta = with stdenv.lib; {
     description = "A library for image loading and manipulation";
     homepage = http://library.gnome.org/devel/gdk-pixbuf/;
+    license = licenses.lgpl21Plus;
     maintainers = [ maintainers.eelco ];
     platforms = platforms.unix;
   };
