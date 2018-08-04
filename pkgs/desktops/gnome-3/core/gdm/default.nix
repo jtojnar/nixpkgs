@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, substituteAll, pkgconfig, glib, itstool, libxml2, xorg
+{ stdenv, fetchurl, fetchpatch, substituteAll, pkgconfig, glib, itstool, libxml2, xorg
 , intltool, accountsservice, libX11, gnome3, systemd, autoreconfHook
 , gtk, libcanberra-gtk3, pam, libtool, gobjectIntrospection, plymouth
 , librsvg, coreutils, xwayland }:
@@ -41,7 +41,10 @@ stdenv.mkDerivation rec {
       src = ./fix-paths.patch;
       inherit coreutils plymouth xwayland;
     })
-    ./sessions_dir.patch
+    (fetchpatch {
+      url = https://gitlab.gnome.org/jtojnar/gdm/commit/0a61b3d3f7c69a922afe5c8ed871998c78001768.patch;
+      sha256 = "1idd8i7mckpm72b8skycxd0y3hinb5vim21xlcpnjgmprz8l44aq";
+    })
     ./gdm-x-session_extra_args.patch
     ./gdm-session-worker_xserver-path.patch
   ];
