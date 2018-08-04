@@ -28,8 +28,7 @@ let
      mkdir -p $out/share/gsettings-schemas/nixos-gsettings-overrides/glib-2.0/schemas
      cp -rf ${pkgs.gnome3.gsettings-desktop-schemas}/share/gsettings-schemas/gsettings-desktop-schemas*/glib-2.0/schemas/*.xml $out/share/gsettings-schemas/nixos-gsettings-overrides/glib-2.0/schemas
 
-     ${concatMapStrings (pkg: "cp -rf ${pkg}/share/gsettings-schemas/*/glib-2.0/schemas/*.xml $out/share/gsettings-schemas/nixos-gsettings-overrides/glib-2.0/schemas\n") cfg.extraGSettingsOverridePackages}
-
+     ${concatMapStrings (pkg: "cp -rf ${pkg}/share/gsettings-schemas/*/glib-2.0/schemas/*.xml $out/share/gsettings-schemas/nixos-gsettings-overrides/glib-2.0/schemas\n") (cfg.extraGSettingsOverridePackages ++ [pkgs.gnome3.gnome_session])}
      chmod -R a+w $out/share/gsettings-schemas/nixos-gsettings-overrides
      cat - > $out/share/gsettings-schemas/nixos-gsettings-overrides/glib-2.0/schemas/nixos-defaults.gschema.override <<- EOF
        [org.gnome.desktop.background]
@@ -150,7 +149,9 @@ in {
     environment.variables.GNOME_SESSION_DEBUG = optionalString cfg.debug "1";
 
     # Override default mimeapps
-    environment.variables.XDG_DATA_DIRS = [ "${mimeAppsList}/share" ];
+    environment.variables.XDG_DATA_DIRS = [
+      "${mimeAppsList}/share" "${pkgs.gnome3.gnome-session}/share"
+    ];
 
     # Override GSettings schemas
     environment.variables.NIX_GSETTINGS_OVERRIDES_DIR = "${nixos-gsettings-desktop-schemas}/share/gsettings-schemas/nixos-gsettings-overrides/glib-2.0/schemas";
