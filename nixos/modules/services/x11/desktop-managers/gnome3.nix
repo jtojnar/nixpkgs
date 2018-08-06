@@ -139,7 +139,7 @@ in {
     services.xserver.displayManager.extraSessionFilePackages = [ pkgs.gnome3.gnome-session ] ++ optional cfg.enableFlashback pkgs.gnome3.gnome-flashback;
 
     services.xserver.displayManager.sessionCommands = ''
-      if test "$XDG_CURRENT_DESKTOP" = "GNOME"; then
+      if grep -q ":GNOME:" <<< ":$XDG_CURRENT_DESKTOP:"; then
           ${concatMapStrings (p: ''
             if [ -d "${p}/share/gsettings-schemas/${p.name}" ]; then
               export XDG_DATA_DIRS=$XDG_DATA_DIRS''${XDG_DATA_DIRS:+:}${p}/share/gsettings-schemas/${p.name}
