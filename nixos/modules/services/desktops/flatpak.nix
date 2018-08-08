@@ -34,7 +34,7 @@ in {
 
   ###### implementation
   config = mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.flatpak ];
+    environment.systemPackages = [ pkgs.flatpak ] ++ cfg.extraPortals;
 
     services.dbus.packages = [ pkgs.flatpak pkgs.xdg-desktop-portal ] ++ cfg.extraPortals;
 
@@ -45,8 +45,6 @@ in {
       "/var/lib/flatpak/exports"
     ];
 
-    environment.variables = {
-      XDG_DESKTOP_PORTAL_PATH = map (p: "${p}/share/xdg-desktop-portal/portals") cfg.extraPortals;
-    };
+    environment.pathsToLink = [ "/share/xdg-desktop-portal/portals" ];
   };
 }

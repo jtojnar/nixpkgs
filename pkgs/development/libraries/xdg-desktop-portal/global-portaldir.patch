@@ -1,0 +1,11 @@
+--- a/src/xdg-desktop-portal.c
++++ b/src/xdg-desktop-portal.c
+@@ -180,7 +180,7 @@
+ static void
+ load_installed_portals (void)
+ {
+-  const char *portal_dir = PKGDATADIR "/portals";
++  const char *portal_dir = "@systemPath@/share/xdg-desktop-portal/portals";
+   g_autoptr(GFile) dir = g_file_new_for_path (portal_dir);
+   g_autoptr(GFileEnumerator) enumerator = NULL;
+ 

@@ -1,4 +1,4 @@
-{ stdenv, fetchFromGitHub, autoreconfHook, pkgconfig, libxml2, glib, pipewire, fuse }:
+{ stdenv, fetchFromGitHub, substituteAll, autoreconfHook, pkgconfig, libxml2, glib, pipewire, fuse }:
 
 let
   version = "0.11";
@@ -15,7 +15,10 @@ in stdenv.mkDerivation rec {
   };
 
   patches = [
-    ./respect-path-env-var.patch
+    (substituteAll {
+      src = ./global-portaldir.patch;
+      systemPath = "/run/current-system/sw/share"; # config.system.path
+    })
   ];
 
   nativeBuildInputs = [ autoreconfHook pkgconfig libxml2 ];
