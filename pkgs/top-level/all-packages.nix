@@ -8204,6 +8204,8 @@ with pkgs;
 
   gnome-latex = callPackage ../applications/editors/gnome-latex/default.nix { };
 
+  gnome-ssh-askpass = callPackage ../tools/networking/gnome-ssh-askpass { };
+
   gnum4 = callPackage ../development/tools/misc/gnum4 { };
   m4 = gnum4;
 
