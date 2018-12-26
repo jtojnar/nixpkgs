@@ -1,4 +1,4 @@
-{ stdenv, symlinkJoin, fetchurl, fetchFromGitHub, boost, brotli, cmake, double-conversion, flatbuffers, gflags, glog, lz4, perl, python, rapidjson, snappy, thrift, which, zlib, zstd }:
+{ stdenv, symlinkJoin, fetchurl, fetchFromGitHub, boost, brotli, cmake, double-conversion, flatbuffers, gflags, glog, lz4, perl, python, rapidjson, snappy, thrift, which, zlib, zstd, gtest }:
 
 let
   parquet-testing = fetchFromGitHub {
@@ -32,7 +32,11 @@ stdenv.mkDerivation rec {
     ];
 
   nativeBuildInputs = [ cmake ];
-  buildInputs = [ boost double-conversion glog python.pkgs.python python.pkgs.numpy ];
+  buildInputs = [ boost double-conversion glog python.pkgs.python python.pkgs.numpy gtest ];
+
+  postPatch = ''
+    rm cmake_modules/FindGTest.cmake
+  '';
 
   preConfigure = ''
     substituteInPlace cmake_modules/FindThrift.cmake --replace CMAKE_STATIC_LIBRARY CMAKE_SHARED_LIBRARY
