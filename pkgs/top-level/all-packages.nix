@@ -3299,6 +3299,8 @@ in
 
   pigz = callPackage ../tools/compression/pigz { };
 
+  pingendo = callPackage ../applications/graphics/pingendo { };
+
   pixz = callPackage ../tools/compression/pixz { };
 
   pxattr = callPackage ../tools/archivers/pxattr { };
