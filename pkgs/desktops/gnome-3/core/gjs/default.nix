@@ -4,11 +4,11 @@
 
 stdenv.mkDerivation rec {
   name = "gjs-${version}";
-  version = "1.56.2";
+  version = "1.57.91";
 
   src = fetchurl {
     url = "mirror://gnome/sources/gjs/${stdenv.lib.versions.majorMinor version}/${name}.tar.xz";
-    sha256 = "1b5321krn89p3f7s2ik6gpfnc61apzljhlnbqky8c88f7n6832ac";
+    sha256 = "03xpmf141spv2rkhnbwvpvq7z3g4361qn2bif02yb5hn6npjrwsv";
   };
 
   passthru = {
