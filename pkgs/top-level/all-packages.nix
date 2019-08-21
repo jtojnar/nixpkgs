@@ -11031,6 +11031,8 @@ in
     dbus = dbus.override { systemd = null; };
   });
 
+  glib-unstable = callPackage ../development/libraries/glib/unstable.nix { doCheck = false; };
+
   glibmm = callPackage ../development/libraries/glibmm { };
 
   glib-networking = callPackage ../development/libraries/glib-networking {};
