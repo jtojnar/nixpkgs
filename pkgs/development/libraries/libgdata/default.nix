@@ -70,12 +70,12 @@ stdenv.mkDerivation rec {
   ];
 
   propagatedBuildInputs = [
-    gnome3.gnome-online-accounts
     json-glib
   ];
 
   mesonFlags = [
     "-Dgtk_doc=false"
+    "-Dgoa=disabled"
     "-Dinstalled_test_bindir=${placeholder ''installedTests''}/libexec"
     "-Dinstalled_test_datadir=${placeholder ''installedTests''}/share"
     "-Dinstalled_tests=true"
