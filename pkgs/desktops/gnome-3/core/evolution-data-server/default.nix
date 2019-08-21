@@ -1,8 +1,8 @@
 { fetchurl, stdenv, substituteAll, pkgconfig, gnome3, python3, gobject-introspection
 , intltool, libsoup, libxml2, libsecret, icu, sqlite, tzdata, libcanberra-gtk3, gcr
 , p11-kit, db, nspr, nss, libical, gperf, wrapGAppsHook, glib-networking, pcre
-, vala, cmake, ninja, kerberos, openldap, webkitgtk, libaccounts-glib, json-glib
-, glib, gtk3, gnome-online-accounts, libgweather, libgdata, gsettings-desktop-schemas }:
+, vala, cmake, ninja, kerberos, openldap, libaccounts-glib, json-glib
+, glib, gtk3, libgweather, libgdata, gsettings-desktop-schemas }:
 
 stdenv.mkDerivation rec {
   name = "evolution-data-server-${version}";
@@ -32,16 +32,17 @@ stdenv.mkDerivation rec {
     cmake ninja pkgconfig intltool python3 gperf wrapGAppsHook gobject-introspection vala
   ];
   buildInputs = [
-    glib libsoup libxml2 gtk3 gnome-online-accounts
+    glib libsoup libxml2 gtk3
     gcr p11-kit libgweather libgdata libaccounts-glib json-glib
-    icu sqlite kerberos openldap webkitgtk glib-networking
+    icu sqlite kerberos openldap glib-networking
     libcanberra-gtk3 pcre
   ];
 
   propagatedBuildInputs = [ libsecret nss nspr libical db libsoup ];
 
   cmakeFlags = [
-    "-DENABLE_UOA=OFF"
+    "-DENABLE_OAUTH2=OFF"
+    "-DENABLE_GOA=OFF"
     "-DENABLE_VALA_BINDINGS=ON"
     "-DENABLE_INTROSPECTION=ON"
     "-DCMAKE_SKIP_BUILD_RPATH=OFF"
