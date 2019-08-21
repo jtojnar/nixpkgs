@@ -29,8 +29,8 @@ in stdenv.mkDerivation rec {
     sassc desktop-file-utils libxslt.bin python3
   ];
   buildInputs = [
-    systemd caribou
-    gsettings-desktop-schemas gnome-keyring glib-unstable gcr json-glib accountsservice
+    glib-unstable systemd caribou
+    gsettings-desktop-schemas gnome-keyring gcr json-glib accountsservice
     libcroco libsecret libsoup polkit gdk-pixbuf librsvg
     clutter networkmanager libstartup_notification telepathy-glib
     libXtst gjs mutter libpulseaudio evolution-data-server
@@ -75,6 +75,9 @@ in stdenv.mkDerivation rec {
       --prefix XDG_DATA_DIRS : "${shared-mime-info}/share"
     )
   '';
+
+  # needs newere gdk-pixbuf
+  NIX_CFLAGS_COMPILE = "-Wno-deprecated-declarations";
 
   passthru = {
     mozillaPlugin = "/lib/mozilla/plugins";
