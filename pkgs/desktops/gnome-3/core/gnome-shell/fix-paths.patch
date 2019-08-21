@@ -14,7 +14,7 @@
 @@ -1059,7 +1059,7 @@ class InputSourceIndicator extends PanelMenu.Button {
          let description = xkbLayout;
          if (xkbVariant.length > 0)
-             description = description + '\t' + xkbVariant;
+             description = `${description}\t${xkbVariant}`;
  
 -        Util.spawn(['gkbd-keyboard-display', '-l', description]);
 +        Util.spawn(['@libgnomekbd@/bin/gkbd-keyboard-display', '-l', description]);

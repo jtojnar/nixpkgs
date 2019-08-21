@@ -16,10 +16,11 @@ in stdenv.mkDerivation rec {
   name = "gnome-shell-${version}";
   version = "3.32.2";
 
-  src = fetchurl {
-    url = "mirror://gnome/sources/gnome-shell/${stdenv.lib.versions.majorMinor version}/${name}.tar.xz";
-    sha256 = "0anlkdnqsp5fqvmg95rqjpp1ifcx5xzsvwcrdsvb1cqzbh6inmp5";
-  };
+  # src = fetchurl {
+  #   url = "mirror://gnome/sources/gnome-shell/${stdenv.lib.versions.majorMinor version}/${name}.tar.xz";
+  #   sha256 = "0anlkdnqsp5fqvmg95rqjpp1ifcx5xzsvwcrdsvb1cqzbh6inmp5";
+  # };
+  src = /home/jtojnar/gnome-shell;
 
   LANG = "en_US.UTF-8";
 
@@ -50,11 +51,6 @@ in stdenv.mkDerivation rec {
   ];
 
   patches = [
-    (fetchpatch {
-      name = "0001-build-Add-missing-dependency-to-run-js-test.patch";
-      url = https://bug787864.bugzilla-attachments.gnome.org/attachment.cgi?id=360016;
-      sha256 = "1dmahd8ysbzh33rxglba0fbq127aw9h14cl2a2bw9913vjxhxijm";
-    })
     (substituteAll {
       src = ./fix-paths.patch;
       inherit libgnomekbd unzip;
