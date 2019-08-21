@@ -9,10 +9,11 @@ stdenv.mkDerivation rec {
   name = "gsettings-desktop-schemas-${version}";
   version = "3.32.0";
 
-  src = fetchurl {
-    url = "mirror://gnome/sources/gsettings-desktop-schemas/${stdenv.lib.versions.majorMinor version}/${name}.tar.xz";
-    sha256 = "0d8a6479vappgplq5crdr3ah0ykqcr3fw533wkx9v1a8lnrv8n9d";
-  };
+  # src = fetchurl {
+  #   url = "mirror://gnome/sources/gsettings-desktop-schemas/${stdenv.lib.versions.majorMinor version}/${name}.tar.xz";
+  #   sha256 = "0d8a6479vappgplq5crdr3ah0ykqcr3fw533wkx9v1a8lnrv8n9d";
+  # };
+  src = /home/jtojnar/gsettings-desktop-schemas;
 
   passthru = {
     updateScript = gnome3.updateScript { packageName = "gsettings-desktop-schemas"; };
