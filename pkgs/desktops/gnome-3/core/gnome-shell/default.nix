@@ -4,7 +4,7 @@
 , libgweather, libcanberra-gtk3, librsvg, geoclue2, perl, docbook_xml_dtd_42, desktop-file-utils
 , libpulseaudio, libical, gobject-introspection, gstreamer, wrapGAppsHook, libxslt, gcr, caribou
 , accountsservice, gdk-pixbuf, gdm, upower, ibus, networkmanagerapplet, libgnomekbd, gnome-desktop
-, gsettings-desktop-schemas, gnome-keyring, glib, gjs, mutter, evolution-data-server, gtk3
+, gsettings-desktop-schemas, gnome-keyring, glib-unstable, gjs, mutter, evolution-data-server, gtk3
 , sassc, systemd, gst_all_1, adwaita-icon-theme, gnome-bluetooth, gnome-clocks, gnome-settings-daemon }:
 
 # http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/gnome-base/gnome-shell/gnome-shell-3.10.2.1.ebuild?revision=1.3&view=markup
@@ -30,7 +30,7 @@ in stdenv.mkDerivation rec {
   ];
   buildInputs = [
     systemd caribou
-    gsettings-desktop-schemas gnome-keyring glib gcr json-glib accountsservice
+    gsettings-desktop-schemas gnome-keyring glib-unstable gcr json-glib accountsservice
     libcroco libsecret libsoup polkit gdk-pixbuf librsvg
     clutter networkmanager libstartup_notification telepathy-glib
     libXtst gjs mutter libpulseaudio evolution-data-server
