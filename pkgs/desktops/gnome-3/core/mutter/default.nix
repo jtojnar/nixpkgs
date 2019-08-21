@@ -1,8 +1,8 @@
 { fetchurl, substituteAll, stdenv, pkgconfig, gnome3, gettext, gobject-introspection, upower, cairo
 , pango, cogl, clutter, libstartup_notification, zenity, libcanberra-gtk3
 , ninja, xkeyboard_config, libxkbfile, libxkbcommon, libXtst, libinput
-, gsettings-desktop-schemas, glib, gtk3, gnome-desktop
-, geocode-glib, pipewire, libgudev, libwacom, xwayland, meson
+, gsettings-desktop-schemas, glib-unstable, gtk3, gnome-desktop
+, geocode-glib, pipewire, libgudev, libwacom, sysprof, xwayland, meson
 , gnome-settings-daemon
 , xorgserver
 , python3
@@ -15,10 +15,11 @@ stdenv.mkDerivation rec {
 
   outputs = [ "out" "dev" "man" ];
 
-  src = fetchurl {
-    url = "mirror://gnome/sources/mutter/${stdenv.lib.versions.majorMinor version}/${pname}-${version}.tar.xz";
-    sha256 = "1h577i2ap7dpfy1jg101jvc6nzccc0csgvd55ahydlr8f94frcva";
-  };
+  # src = fetchurl {
+  #   url = "mirror://gnome/sources/mutter/${stdenv.lib.versions.majorMinor version}/${pname}-${version}.tar.xz";
+  #   sha256 = "1h577i2ap7dpfy1jg101jvc6nzccc0csgvd55ahydlr8f94frcva";
+  # };
+  src = /home/jtojnar/mutter;
 
   mesonFlags = [
     "-Dxwayland-path=${xwayland}/bin/Xwayland"
@@ -42,9 +43,9 @@ stdenv.mkDerivation rec {
   ];
 
   buildInputs = [
-    glib gobject-introspection gtk3 gsettings-desktop-schemas upower
+    glib-unstable gobject-introspection gtk3 gsettings-desktop-schemas upower
     gnome-desktop cairo pango cogl clutter zenity libstartup_notification
-    geocode-glib libinput libgudev libwacom
+    geocode-glib libinput libgudev libwacom sysprof
     libcanberra-gtk3 zenity xkeyboard_config libxkbfile
     libxkbcommon pipewire xwayland
     gnome-settings-daemon
@@ -62,8 +63,11 @@ stdenv.mkDerivation rec {
   '';
 
   postInstall = ''
-    ${glib.dev}/bin/glib-compile-schemas "$out/share/glib-2.0/schemas"
+    ${glib-unstable.dev}/bin/glib-compile-schemas "$out/share/glib-2.0/schemas"
   '';
+
+  # needs newere gdk-pixbuf
+  NIX_CFLAGS_COMPILE = "-Wno-deprecated-declarations";
 
   enableParallelBuilding = true;
 
