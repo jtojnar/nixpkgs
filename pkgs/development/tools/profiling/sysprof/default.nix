@@ -2,8 +2,9 @@
 , desktop-file-utils
 , fetchurl
 , gettext
-, glib
+, glib-unstable
 , gtk3
+, libdazzle
 , itstool
 , libxml2
 , meson, ninja
@@ -18,13 +19,13 @@
 
 stdenv.mkDerivation rec {
   pname = "sysprof";
-  version = "3.32.0";
+  version = "3.33.90";
 
   outputs = [ "out" "lib" "dev" ];
 
   src = fetchurl {
     url = "mirror://gnome/sources/${pname}/${stdenv.lib.versions.majorMinor version}/${pname}-${version}.tar.xz";
-    sha256 = "0kamsnnig56lzs4ziwcxm3b1xyis4z361s9nj3nca0c78sgac8pw";
+    sha256 = "0npxja2phli40prhyqid53m3128yc8vwnz55q56074ack6xlzas3";
   };
 
   nativeBuildInputs = [
@@ -39,7 +40,7 @@ stdenv.mkDerivation rec {
     wrapGAppsHook
     gnome3.adwaita-icon-theme
   ];
-  buildInputs = [ glib gtk3 pango polkit systemd.dev systemd.lib ];
+  buildInputs = [ glib-unstable gtk3 libdazzle pango polkit systemd.dev systemd.lib ];
 
   mesonFlags = [
     "-Dsystemdunitdir=lib/systemd/system"
