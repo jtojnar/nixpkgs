@@ -7,13 +7,12 @@
 
 stdenv.mkDerivation rec {
   name = "gsettings-desktop-schemas-${version}";
-  version = "3.32.0";
+  version = "3.33.90";
 
-  # src = fetchurl {
-  #   url = "mirror://gnome/sources/gsettings-desktop-schemas/${stdenv.lib.versions.majorMinor version}/${name}.tar.xz";
-  #   sha256 = "0d8a6479vappgplq5crdr3ah0ykqcr3fw533wkx9v1a8lnrv8n9d";
-  # };
-  src = /home/jtojnar/gsettings-desktop-schemas;
+  src = fetchurl {
+    url = "mirror://gnome/sources/gsettings-desktop-schemas/${stdenv.lib.versions.majorMinor version}/${name}.tar.xz";
+    sha256 = "057bsz3fcmq6jzk88c3a540ps551k7ksvwrkfs0za5dbqvqj46sh";
+  };
 
   passthru = {
     updateScript = gnome3.updateScript { packageName = "gsettings-desktop-schemas"; };
