@@ -1,5 +1,6 @@
 { stdenv
 , lib
+, variant ? "libzbar"
 , fetchFromGitHub
 , imagemagickBig
 , pkgconfig
@@ -19,6 +20,39 @@
 
 let
   inherit (python2Packages) pygtk python;
+
+  variants = {
+    libzbar = {
+      targets = [
+        "zbar/zbar"
+      ];
+    };
+
+    zbarimg = {
+      targets = [
+        "zbarimg/zbarimg"
+      ];
+
+      deps = [
+        imagemagickBig
+      ];
+    };
+
+    zbarcam = {
+      targets = [
+        "zbarcam/zbarcam"
+      ];
+
+      deps = [
+        imagemagickBig
+      ];
+    };
+    python
+    zbarcam-gtk
+    libzbar-gtk
+    zbarcam-qt
+    libzbar-qt
+  };
 in
 stdenv.mkDerivation rec {
   pname = "zbar";
@@ -39,29 +73,34 @@ stdenv.mkDerivation rec {
   ];
 
   buildInputs = [
-    imagemagickBig
-    python
-    pygtk
-    perl
-    libX11
-  ] ++ lib.optionals enableDbus [
-    dbus
-  ] ++ lib.optionals enableVideo [
-    libv4l
-    gtk2
-    qt5.qtbase
-    qt5.qtx11extras
+  #   python
+  #   pygtk
+  #   perl
+  #   libX11
+  # ] ++ optional enableDbus dbus
+  # ++ optionals enableVideo [
+  #   libv4l
+  #   gtk2
+  #   qt5.qtbase
+  #   qt5.qtx11extras
   ];
 
-  configureFlags = (if enableDbus then [
-    "--with-dbusconfdir=${placeholder "out"}/etc"
-  ] else [
-    "--without-dbus"
-  ]) ++ lib.optionals (!enableVideo) [
-    "--disable-video"
-    "--without-gtk"
-    "--without-qt"
+  configureFlags = [
+    (lib.withFeature (variant == "zbarimg") "imagemagick")
+    (lib.enableFeature (variant == "zbarcam") "video")
+    (lib.withFeature (variant == "python") "python")
+    (lib.withFeature (variant == "zbarcam-gtk" || variant == "libzbar-gtk") "gtk")
+    (lib.withFeature (variant == "zbarcam-qt" || variant == "libzbar-qt") "qt")
   ];
+  # (if enableDbus then [
+  #   "--with-dbusconfdir=${placeholder "out"}/etc/dbus-1/system.d"
+  # ] else [
+  #   "--without-dbus"
+  # ]) ++ optionals (!enableVideo) [
+  #   "--disable-video"
+  #   "--without-gtk"
+  #   "--without-qt"
+  # ];
 
   meta = with lib; {
     description = "Bar code reader";
