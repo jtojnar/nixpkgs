@@ -133,7 +133,9 @@ in
 
       background = mkOption {
         type = types.str;
-        default = pkgs.nixos-artwork.wallpapers.simple-dark-gray-bottom.gnomeFilePath;
+        # TODO: use gnomeFilePath when fixing string context issues in make-option-doc
+        # https://github.com/NixOS/nixpkgs/issues/83863
+        default = "${pkgs.nixos-artwork.wallpapers.simple-dark-gray-bottom}/share/artwork/gnome/nix-wallpaper-simple-dark-gray_bottom.png";
         description = ''
           The background image or color to use.
         '';
