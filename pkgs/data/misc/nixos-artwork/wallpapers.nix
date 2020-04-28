@@ -3,12 +3,18 @@
 let
   mkNixBackground = { name, src, description }:
 
-    stdenv.mkDerivation {
+  let
+    pkg = stdenv.mkDerivation {
       inherit name src;
 
       dontUnpack = true;
 
       installPhase = ''
+        # GNOME
+        mkdir -p $out/share/backgrounds/nixos
+        ln -s $src $out/share/backgrounds/nixos/${src.name}
+
+        # TODO: is this path still needed?
         mkdir -p $out/share/artwork/gnome
         ln -s $src $out/share/artwork/gnome/${src.name}
 
@@ -29,6 +35,13 @@ _EOF
         platforms = platforms.all;
       };
     };
+
+  in pkg.overrideAttrs(old: {
+    passthru = {
+      gnomeFilePath = "${pkg.outPath}/share/backgrounds/nixos/${src.name}";
+      kdeFilePath = "${pkg.outPath}/share/wallpapers/${name}/contents/images/${src.name}";
+    };
+  });
 
 in
 
