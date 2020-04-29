@@ -38,8 +38,8 @@ _EOF
 
   in pkg.overrideAttrs(old: {
     passthru = {
-      gnomeFilePath = "${pkg.outPath}/share/backgrounds/nixos/${src.name}";
-      kdeFilePath = "${pkg.outPath}/share/wallpapers/${name}/contents/images/${src.name}";
+      gnomeFilePath = "${builtins.trace pkg pkg}/share/backgrounds/nixos/${src.name}";
+      kdeFilePath = "/share/wallpapers/${name}/contents/images/${src.name}";
     };
   });
 

@@ -132,7 +132,7 @@ in
       };
 
       background = mkOption {
-        type = types.str;
+        type = types.path;
         default = pkgs.nixos-artwork.wallpapers.simple-dark-gray-bottom.gnomeFilePath;
         description = ''
           The background image or color to use.
