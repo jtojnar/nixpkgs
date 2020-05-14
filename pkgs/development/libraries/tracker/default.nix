@@ -8,9 +8,8 @@
 , python3
 , gtk-doc
 , docbook_xsl
-, docbook_xml_dtd_412
-, docbook_xml_dtd_43
 , docbook_xml_dtd_45
+, asciidoc
 , libxml2
 , glib
 , wrapGAppsHook
@@ -21,31 +20,25 @@
 , gnome3
 , icu
 , libuuid
-, networkmanager
 , libsoup
 , json-glib
 , systemd
 , dbus
-, substituteAll
 }:
 
+let
+  testUtilsPath = "${placeholder "dev"}/lib/tracker";
+in
 stdenv.mkDerivation rec {
   pname = "tracker";
-  version = "2.3.4";
+  version = "2.99.1";
 
   outputs = [ "out" "dev" "devdoc" ];
 
   src = fetchurl {
     url = "mirror://gnome/sources/${pname}/${stdenv.lib.versions.majorMinor version}/${pname}-${version}.tar.xz";
-    sha256 = "V3lSJEq5d8eLC4ji9jxBl+q6FuTWa/9pK39YmT4GUW0=";
+    sha256 = "mLY0kQfkxDQFkqZGNQAbGh5ivQTS2duSGn4SF8rK6cM=";
   };
-
-  patches = [
-    (substituteAll {
-      src = ./fix-paths.patch;
-      gdbus = "${glib.bin}/bin/gdbus";
-    })
-  ];
 
   nativeBuildInputs = [
     meson
@@ -58,9 +51,8 @@ stdenv.mkDerivation rec {
     gobject-introspection
     gtk-doc
     docbook_xsl
-    docbook_xml_dtd_412
-    docbook_xml_dtd_43
     docbook_xml_dtd_45
+    asciidoc
     python3 # for data-generators
     systemd # used for checks to install systemd user service
     dbus # used for checks and pkgconfig to install dbus service/s
@@ -71,11 +63,11 @@ stdenv.mkDerivation rec {
     libxml2
     sqlite
     icu
-    networkmanager
     libsoup
     libuuid
     json-glib
     libstemmer
+    gobject-introspection # for glib typelibs
   ];
 
   checkInputs = [
@@ -83,18 +75,18 @@ stdenv.mkDerivation rec {
   ];
 
   mesonFlags = [
-    # TODO: figure out wrapping unit tests, some of them fail on missing gsettings-desktop-schemas
-    # "-Dfunctional_tests=true"
-    "-Ddocs=true"
+    "-Dtest_utils_dir=${testUtilsPath}"
   ];
 
   doCheck = true;
 
   postPatch = ''
-    patchShebangs utils/g-ir-merge/g-ir-merge
     patchShebangs utils/data-generators/cc/generate
     patchShebangs tests/functional-tests/test-runner.sh.in
     patchShebangs tests/functional-tests/*.py
+
+    # https://gitlab.gnome.org/GNOME/tracker/issues/207
+    substituteInPlace docs/manpages/meson.build --replace "/etc/asciidoc" "${asciidoc}/etc/asciidoc"
   '';
 
   preCheck = ''
@@ -106,9 +98,19 @@ stdenv.mkDerivation rec {
     # though, so we need to replace the absolute path with a local one during build.
     # We are using a symlink that will be overridden during installation.
     mkdir -p $out/lib
-    ln -s $PWD/src/libtracker-sparql-backend/libtracker-sparql-2.0.so $out/lib/libtracker-sparql-2.0.so.0
-    ln -s $PWD/src/libtracker-miner/libtracker-miner-2.0.so $out/lib/libtracker-miner-2.0.so.0
+    ln -s $PWD/src/libtracker-sparql-backend/libtracker-sparql-3.0.so $out/lib/libtracker-sparql-3.0.so.0
     ln -s $PWD/src/libtracker-data/libtracker-data.so $out/lib/libtracker-data.so
+  '';
+
+  checkPhase = ''
+    runHook preCheck
+
+    # Functional tests require dbus session.
+    dbus-run-session \
+      --config-file=${dbus.daemon}/share/dbus-1/session.conf \
+      meson test --print-errorlogs
+
+    runHook postCheck
   '';
 
   postCheck = ''
@@ -116,8 +118,9 @@ stdenv.mkDerivation rec {
     rm -r $out/lib
   '';
 
-  postInstall = ''
-    glib-compile-schemas "$out/share/glib-2.0/schemas"
+  postFixup = ''
+    gappsWrapperArgs+=(--set NIX_PYTHONPATH "$PYTHONPATH")
+    wrapGApp ${testUtilsPath}/trackertestutils/tracker-sandbox
   '';
 
   passthru = {
