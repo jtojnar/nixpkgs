@@ -4765,6 +4765,8 @@ in {
 
   mysqlclient = callPackage ../development/python-modules/mysqlclient { };
 
+  myst-parser = callPackage ../development/python-modules/myst-parser { };
+
   mypy = callPackage ../development/python-modules/mypy { };
 
   mypy-extensions = callPackage ../development/python-modules/mypy/extensions.nix { };
