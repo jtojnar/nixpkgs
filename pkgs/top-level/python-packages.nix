@@ -4599,6 +4599,8 @@ in {
 
   markdownsuperscript = callPackage ../development/python-modules/markdownsuperscript {};
 
+  markdown-it-py = callPackage ../development/python-modules/markdown-it-py { };
+
   markdown-macros = callPackage ../development/python-modules/markdown-macros { };
 
   mathics = callPackage ../development/python-modules/mathics { };
