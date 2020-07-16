@@ -7201,6 +7201,8 @@ in
 
   sundtek = callPackage ../misc/drivers/sundtek { };
 
+  sunflower = callPackage ../applications/misc/sunflower { };
+
   sunxi-tools = callPackage ../development/tools/sunxi-tools { };
 
   sumorobot-manager = python3Packages.callPackage ../applications/science/robotics/sumorobot-manager { };
