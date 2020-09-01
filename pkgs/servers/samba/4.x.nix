@@ -81,7 +81,9 @@ stdenv.mkDerivation rec {
     libbsd
     libarchive
     zlib
+  ] ++ optionals (!stdenv.isLinux) [
     fam
+  ] ++ [
     libunwind
     gnutls
     libtasn1
