@@ -15229,8 +15229,6 @@ in
 
   streamlink = callPackage ../applications/video/streamlink { pythonPackages = python3Packages; };
 
-  strigi = callPackage ../development/libraries/strigi { clucene_core = clucene_core_2; };
-
   subdl = callPackage ../applications/video/subdl { };
 
   subtitleeditor = callPackage ../applications/video/subtitleeditor { enchant = enchant1; };
