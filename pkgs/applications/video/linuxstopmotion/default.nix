@@ -1,5 +1,5 @@
 { stdenv, fetchgit, pkgconfig, qt4, SDL, SDL_image, libvorbis, libtar, libxml2
-, gamin, qmake4Hook
+, qmake4Hook
 }:
 
 stdenv.mkDerivation rec {
@@ -13,7 +13,7 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ pkgconfig ];
-  buildInputs = [ qt4 SDL SDL_image libvorbis libtar libxml2 gamin qmake4Hook ];
+  buildInputs = [ qt4 SDL SDL_image libvorbis libtar libxml2 qmake4Hook ];
 
   patches = [ ./linuxstopmotion-fix-wrong-isProcess-logic.patch ];
 
