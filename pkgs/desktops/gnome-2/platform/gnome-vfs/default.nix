@@ -1,5 +1,5 @@
 { stdenv, fetchurl, fetchpatch, pkgconfig, libxml2, bzip2, openssl, dbus-glib
-, glib, gamin, cdparanoia, intltool, GConf, gnome_mime_data, avahi, acl }:
+, glib, cdparanoia, intltool, GConf, gnome_mime_data, avahi, acl }:
 
 stdenv.mkDerivation rec {
   name = "gnome-vfs-${minVer}.4";
@@ -14,7 +14,7 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ intltool pkgconfig ];
   buildInputs =
-    [ libxml2 bzip2 openssl dbus-glib gamin cdparanoia
+    [ libxml2 bzip2 openssl dbus-glib cdparanoia
       gnome_mime_data avahi acl
     ];
 
