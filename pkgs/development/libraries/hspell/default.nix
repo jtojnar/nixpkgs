@@ -6,11 +6,11 @@
 
 stdenv.mkDerivation rec {
   pname = "hspell";
-  version = "1.1";
+  version = "1.4";
 
   src = fetchurl {
     url = "${meta.homepage}${pname}-${version}.tar.gz";
-    sha256 = "08x7rigq5pa1pfpl30qp353hbdkpadr1zc49slpczhsn0sg36pd6";
+    sha256 = "18xymabvwr47gi4w2sw1galpvvq2hrjpj4aw45nivlj0hzaza43k";
   };
 
   nativeBuildInputs = [
@@ -25,6 +25,10 @@ stdenv.mkDerivation rec {
 
   # Can't locate PrefixBits.pl in @INC […] at ./pmerge line 11.
   PERL_USE_UNSAFE_INC = "1";
+
+  configureFlags = [
+    "--enable-shared"
+  ];
 
   postPatch = ''
     patchShebangs --build \

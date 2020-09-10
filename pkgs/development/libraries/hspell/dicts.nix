@@ -23,24 +23,13 @@ in
     '';
   };
 
-  myspell = dict "myspell" {
-    name = "myspell-dict-he-${hspell.version}";
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/lib/myspell
-      cp -v he.dic he.aff $out/lib/myspell
-      runHook postInstall
-    '';
-  };
-
   hunspell = dict "hunspell" {
     name = "hunspell-dict-he-${hspell.version}";
 
     installPhase = ''
       runHook preInstall
-      mkdir -p $out/lib
-      cp -rv hunspell $out/lib
+      mkdir -p $out/lib/hunspell
+      cp -v he.dic he.aff $out/lib/hunspell
       runHook postInstall
     '';
   };
