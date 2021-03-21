@@ -16164,7 +16164,10 @@ in
 
   libroxml = callPackage ../development/libraries/libroxml { };
 
-  librsvg = callPackage ../development/libraries/librsvg { };
+  librsvg = callPackage ../development/libraries/librsvg {
+    inherit (darwin) libobjc;
+    inherit (darwin.apple_sdk.frameworks) ApplicationServices Foundation;
+  };
 
   librsync = callPackage ../development/libraries/librsync { };
 
