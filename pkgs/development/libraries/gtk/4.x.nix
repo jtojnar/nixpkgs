@@ -65,7 +65,7 @@ stdenv.mkDerivation rec {
   pname = "gtk4";
   version = "4.2.0";
 
-  outputs = [ "out" "dev" "devdoc" ];
+  outputs = [ "out" "dev" ] ++ lib.optionals x11Support [ "devdoc" ];
   outputBin = "dev";
 
   setupHooks = [
@@ -95,7 +95,9 @@ stdenv.mkDerivation rec {
     epoxy
     json-glib
     isocodes
+  ] ++ lib.optionals (!stdenv.isDarwin) [
     vulkan-headers
+  ] ++ [
     librest
     libsoup
     ffmpeg
@@ -134,18 +136,27 @@ stdenv.mkDerivation rec {
     glib
     graphene
     pango
-    vulkan-loader # TODO: Possibly not used on Darwin
-
+  ] ++ lib.optionals (!stdenv.isDarwin) [
+    vulkan-loader
+  ] ++ [
     # Required for GSettings schemas at runtime.
     # Will be picked up by wrapGAppsHook.
     gsettings-desktop-schemas
   ];
 
   mesonFlags = [
-    "-Dgtk_doc=true"
+    # ../docs/tools/shooter.c:4:10: fatal error: 'cairo-xlib.h' file not found
+    "-Dgtk_doc=${lib.boolToString x11Support}"
     "-Dbuild-tests=false"
     "-Dtracker=${if trackerSupport then "enabled" else "disabled"}"
     "-Dbroadway-backend=${lib.boolToString broadwaySupport}"
+  ] ++ lib.optionals (!cupsSupport) [
+    "-Dprint-cups=disabled"
+  ] ++ lib.optionals stdenv.isDarwin [
+    "-Dvulkan=disabled"
+    "-Dmedia-gstreamer=disabled" # requires gstreamer-gl
+  ] ++ lib.optionals (!x11Support) [
+    "-Dx11-backend=false"
   ];
 
   doCheck = false; # needs X11
@@ -188,6 +199,7 @@ stdenv.mkDerivation rec {
       wrapProgram $f --prefix XDG_DATA_DIRS : "${shared-mime-info}/share"
     done
 
+  '' + lib.optionalString x11Support ''
     # So that devhelp can find this.
     mkdir -p "$devdoc/share/devhelp"
     mv "$out/share/doc/gtk4/reference" "$devdoc/share/devhelp/books"
