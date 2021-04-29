@@ -8411,6 +8411,8 @@ in
     inherit (darwin.apple_sdk.frameworks) IOKit ApplicationServices;
   };
 
+  smartset-apps = callPackage ../applications/misc/smartset-apps {};
+
   smarty3 = callPackage ../development/libraries/smarty3 { };
   smarty3-i18n = callPackage ../development/libraries/smarty3-i18n { };
 
