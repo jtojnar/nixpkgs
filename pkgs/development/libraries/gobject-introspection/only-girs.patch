@@ -1,0 +1,94 @@
+diff --git a/gir/meson.build b/gir/meson.build
+index 557e5517..cd6a1426 100644
+--- a/gir/meson.build
++++ b/gir/meson.build
+@@ -181,8 +181,6 @@ glib_files += files('glib-2.0.c')
+ glib_gir = custom_target('gir-glib',
+   input: glib_files,
+   output: 'GLib-2.0.gir',
+-  depends: giscanner_pymod,
+-  depend_files: giscanner_built_files,
+   install: true,
+   install_dir: girdir,
+   command: glib_command + [
+@@ -244,8 +242,7 @@ gobject_files += files('gobject-2.0.c')
+ gobject_gir = custom_target('gir-gobject',
+   input: gobject_files,
+   output: 'GObject-2.0.gir',
+-  depends: [glib_gir, giscanner_pymod],
+-  depend_files: giscanner_built_files,
++  depends: [glib_gir, ],
+   install: true,
+   install_dir: girdir,
+   command: gobject_command + [
+@@ -291,8 +288,7 @@ gmodule_files += files('gmodule-2.0.c')
+ gir_files += custom_target('gir-gmodule',
+   input: gmodule_files,
+   output: 'GModule-2.0.gir',
+-  depends: [glib_gir, giscanner_pymod],
+-  depend_files: giscanner_built_files,
++  depends: [glib_gir, ],
+   install: true,
+   install_dir: girdir,
+   command: gmodule_command + [
+@@ -380,8 +376,7 @@ gio_files += files('gio-2.0.c')
+ gio_gir = custom_target('gir-gio',
+   input: gio_files,
+   output: 'Gio-2.0.gir',
+-  depends: [gobject_gir, giscanner_pymod],
+-  depend_files: giscanner_built_files,
++  depends: [gobject_gir],
+   install: true,
+   install_dir: girdir,
+   command: gio_command + [
+@@ -414,6 +409,7 @@ if dep_type != 'pkgconfig'
+   girepository_command += glib_libpaths
+ endif
+ 
++'''
+ gir_files += custom_target('gir-girepository',
+   input: girepo_gir_sources,
+   output: 'GIRepository-2.0.gir',
+@@ -431,6 +427,7 @@ gir_files += custom_target('gir-girepository',
+     '@INPUT@',
+   ]
+ )
++'''
+ 
+ typelibs = []
+ if get_option('gi_cross_binary_wrapper') != ''
+@@ -448,7 +445,7 @@ foreach gir : gir_files
+   typelibs += custom_target('generate-typelib-@0@'.format(gir).underscorify(),
+     input: gir,
+     output: '@BASENAME@.typelib',
+-    depends: [gobject_gir, gircompiler, ],
++    depends: [gobject_gir, ],
+     command: gircompiler_command,
+     install: true,
+     install_dir: typelibdir,
+diff --git a/meson.build b/meson.build
+index e5205e36..dcade562 100644
+--- a/meson.build
++++ b/meson.build
+@@ -210,9 +210,10 @@ if not with_doctool
+   warning('Not building with doctool support, not all tests will be run')
+ endif
+ 
+-subdir('girepository')
+-subdir('tools')
+-subdir('giscanner')
++#subdir('girepository')
++#subdir('tools')
++#subdir('giscanner')
++gircompiler = find_program('g-ir-compiler')
+ 
+ # Not building gir data might be useful in cross-compilation
+ # scenarios where running target binaries through software emulation
+@@ -220,6 +221,7 @@ subdir('giscanner')
+ if get_option('build_introspection_data') == true
+     subdir('gir')
+ endif
++subdir_done()
+ subdir('docs')
+ 
+ # The tests will also run, which is not possible if they

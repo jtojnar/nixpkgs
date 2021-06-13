@@ -15176,6 +15176,8 @@ in
     inherit (darwin) cctools;
   };
 
+  cairo-gir = callPackage ../development/libraries/gobject-introspection/cairo-gir.nix { };
+
   goocanvas = callPackage ../development/libraries/goocanvas { };
   goocanvas2 = callPackage ../development/libraries/goocanvas/2.x.nix { };
   goocanvasmm2 = callPackage ../development/libraries/goocanvasmm { };

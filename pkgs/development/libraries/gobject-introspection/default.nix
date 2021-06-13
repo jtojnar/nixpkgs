@@ -13,11 +13,9 @@
 , libffi
 , python3
 , cctools
-, cairo
 , gnome
 , substituteAll
 , nixStoreDir ? builtins.storeDir
-, x11Support ? true
 }:
 
 # now that gobject-introspection creates large .gir files (eg gtk3 case)
@@ -45,13 +43,6 @@ stdenv.mkDerivation rec {
     (substituteAll {
       src = ./absolute_shlib_path.patch;
       inherit nixStoreDir;
-    })
-  ] ++ lib.optionals x11Support [
-    # Hardcode the cairo shared library path in the Cairo gir shipped with this package.
-    # https://github.com/NixOS/nixpkgs/issues/34080
-    (substituteAll {
-      src = ./absolute_gir_path.patch;
-      cairoLib = "${lib.getLib cairo}/lib";
     })
   ];
 
@@ -107,6 +98,11 @@ stdenv.mkDerivation rec {
 
   postCheck = ''
     rm $out/lib/libregress-1.0${stdenv.targetPlatform.extensions.sharedLibrary}
+  '';
+
+  postInstall = ''
+    # These are installed by cairo-gir package.
+    rm $out/lib/girepository-1.0/cairo-1.0.typelib $dev/share/gir-1.0/cairo-1.0.gir
   '';
 
   setupHook = ./setup-hook.sh;
