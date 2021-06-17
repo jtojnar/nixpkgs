@@ -1,13 +1,14 @@
 { haskellPackages, fetchpatch, haskell, removeReferencesTo }:
 
 let
-  static = haskell.lib.justStaticExecutables haskellPackages.pandoc;
+  static = haskell.lib.justStaticExecutables haskellPackages.pandoc_2_14_0_1;
 
 in
   (haskell.lib.overrideCabal static (drv: {
     configureFlags = drv.configureFlags or [] ++ ["-fembed_data_files"];
     buildDepends = drv.buildDepends or [] ++ [haskellPackages.file-embed];
     buildTools = (drv.buildTools or []) ++ [ removeReferencesTo ];
+    src = /home/jtojnar/Projects/pandoc;
   })).overrideAttrs (drv: {
 
     # These libraries are still referenced, because they generate

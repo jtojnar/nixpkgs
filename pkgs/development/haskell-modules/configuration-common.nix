@@ -1545,6 +1545,24 @@ self: super: {
     http-client = self.http-client_0_7_8;
   });
 
+  pandoc_2_14_0_1 = super.pandoc_2_14_0_1.override {
+    citeproc = self.citeproc_0_4_0_1;
+    commonmark = self.commonmark_0_2;
+    commonmark-extensions = self.commonmark-extensions_0_2_1_2;
+    commonmark-pandoc = self.commonmark-pandoc_0_2_1;
+    haddock-library = self.haddock-library_1_10_0;
+    jira-wiki-markup = self.jira-wiki-markup_1_4_0;
+    texmath = self.texmath_0_12_3;
+  };
+  commonmark-extensions_0_2_1_2 = super.commonmark-extensions_0_2_1_2.override {
+    commonmark = self.commonmark_0_2;
+  };
+  commonmark-pandoc_0_2_1 = super.commonmark-pandoc_0_2_1.override {
+    commonmark = self.commonmark_0_2;
+    commonmark-extensions = self.commonmark-extensions_0_2_1_2;
+  };
+  haddock-library_1_10_0 = doJailbreak super.haddock-library_1_10_0;
+
   # 2020-12-06: Restrictive upper bounds w.r.t. pandoc-types (https://github.com/owickstrom/pandoc-include-code/issues/27)
   pandoc-include-code = doJailbreak super.pandoc-include-code;
 
