@@ -13,12 +13,12 @@
 , gtk3
 , gtk4
 , webkitgtk
-, nix-update-script
+, unstableGitUpdater
 }:
 
 python3.pkgs.buildPythonApplication rec {
   pname = "cambalache";
-  version = "0.7.4";
+  version = "unstable-2021-09-23";
 
   format = "other";
 
@@ -26,8 +26,8 @@ python3.pkgs.buildPythonApplication rec {
     domain = "gitlab.gnome.org";
     owner = "jpu";
     repo = pname;
-    rev = version;
-    sha256 = "sha256-R/vRn0LzC2/JG8AGcv333hL54OpjH8S3ZDq3XStIh34=";
+    rev = "69b39dedbf9ccb3fac6afaa8f533d79e68d36792";
+    sha256 = "X+VOZQicUUrHsXm+ttLAPrtc94pvTdjDI8hIe/Zd3ks=";
   };
 
   nativeBuildInputs = [
@@ -77,8 +77,8 @@ python3.pkgs.buildPythonApplication rec {
   '';
 
   passthru = {
-    updateScript = nix-update-script {
-      attrPath = pname;
+    updateScript = unstableGitUpdater {
+      url = "${meta.homepage}.git";
     };
   };
 
