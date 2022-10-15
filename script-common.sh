@@ -1,4 +1,4 @@
-source ~/.nix-profile/etc/profile.d/nix.sh
+source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
 nix-env -i \
     -A bat \
     -A exa \
