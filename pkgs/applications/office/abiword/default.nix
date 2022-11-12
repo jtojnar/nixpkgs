@@ -1,6 +1,7 @@
 { lib
 , stdenv
 , fetchurl
+, fetchpatch
 , pkg-config
 , gtk3
 , fribidi
@@ -57,6 +58,10 @@ stdenv.mkDerivation rec {
     boost
     libxslt
     goffice
+  ];
+
+  configureFlags = [
+    "--enable-plugins=auto"
   ];
 
   enableParallelBuilding = true;
