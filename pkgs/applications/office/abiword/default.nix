@@ -1,6 +1,26 @@
-{ lib, stdenv, fetchurl, pkg-config, gtk3, fribidi
-, libpng, popt, libgsf, enchant, wv, librsvg, bzip2, libjpeg, perl
-, boost, libxslt, goffice, wrapGAppsHook, gnome
+{ lib
+, stdenv
+, fetchurl
+, pkg-config
+, gtk3
+, fribidi
+, libpng
+, popt
+, libgsf
+, enchant
+, wv
+, librsvg
+, bzip2
+, libjpeg
+, perl
+, boost
+, libxslt
+, goffice
+, autoconf
+, automake
+, libtool
+, autoconf-archive
+, wrapGAppsHook
 }:
 
 stdenv.mkDerivation rec {
@@ -8,18 +28,48 @@ stdenv.mkDerivation rec {
   version = "3.0.5";
 
   src = fetchurl {
-    url = "https://www.abisource.com/downloads/abiword/${version}/source/${pname}-${version}.tar.gz";
+    url = "https://www.abisource.com/downloads/abiword/${version}/source/abiword-${version}.tar.gz";
     hash = "sha256-ElckfplwUI1tFFbT4zDNGQnEtCsl4PChvDJSbW86IbQ=";
   };
 
-  enableParallelBuilding = true;
 
-  nativeBuildInputs = [ pkg-config wrapGAppsHook ];
+  nativeBuildInputs = [
+    pkg-config
+    autoconf
+    automake
+    libtool
+    autoconf-archive
+    wrapGAppsHook
+    perl
+  ];
 
   buildInputs = [
-    gtk3 librsvg bzip2 fribidi libpng popt
-    libgsf enchant wv libjpeg perl boost libxslt goffice gnome.adwaita-icon-theme
+    gtk3
+    librsvg
+    bzip2
+    fribidi
+    libpng
+    popt
+    libgsf
+    enchant
+    wv
+    libjpeg
+    boost
+    libxslt
+    goffice
   ];
+
+  enableParallelBuilding = true;
+
+  postPatch = ''
+    patchShebangs \
+      tools/cdump/xp/cdump.pl \
+      po/ui-backport.pl
+  '';
+
+  preConfigure = ''
+    NOCONFIGURE=1 ./autogen.sh
+  '';
 
   meta = with lib; {
     description = "Word processing program, similar to Microsoft Word";
