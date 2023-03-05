@@ -17,7 +17,7 @@
 , libgee
 , libnatpmp
 , libtransmission
-, libutp
+, libutp_3_3
 , miniupnpc
 , openssl
 , pantheon
@@ -54,7 +54,7 @@ stdenv.mkDerivation rec {
     libgee
     libnatpmp
     libtransmission
-    libutp
+    libutp_3_3
     miniupnpc
     openssl
     pantheon.granite

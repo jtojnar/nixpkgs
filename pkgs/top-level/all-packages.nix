@@ -31442,6 +31442,8 @@ with pkgs;
 
   libutp = callPackage ../applications/networking/p2p/libutp { };
 
+  libutp_3_3 = callPackage ../applications/networking/p2p/libutp/3.3.nix { };
+
   lifelines = callPackage ../applications/misc/lifelines { };
 
   liferea = callPackage ../applications/networking/newsreaders/liferea { };
