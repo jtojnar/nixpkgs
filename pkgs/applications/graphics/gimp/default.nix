@@ -2,7 +2,8 @@
   stdenv,
   lib,
   fetchurl,
-  fetchFromGitLab,
+  fetchFromGitHub,
+  fetchpatch,
   substituteAll,
   meson,
   ninja,
@@ -79,7 +80,7 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "gimp";
-  version = "2.99.12-unstable-2022-08-31";
+  version = "2.99.14-unstable-2023-03-17";
 
   outputs = [
     "out"
@@ -95,13 +96,12 @@ stdenv.mkDerivation (finalAttrs: {
   # We should not use fetchFromGitLab because the build system
   # will complain and mark the build as unsupported when it cannot find
   # .git directory but downloading the whole repo is jus too much.
-  src = fetchFromGitLab rec {
+  src = fetchFromGitHub rec {
     name = "gimp-dev-${rev}"; # to make sure the hash is updated
-    domain = "gitlab.gnome.org";
     owner = "GNOME";
     repo = "gimp";
-    rev = "a791151ed05b6e2f7b0ecb71db8be9629d61f5df";
-    sha256 = "0IIQwJW/HwkvKmjrs2xOhbpyLvvqJ0PR3q75PF+b/Ac=";
+    rev = "ad7a2e53eb72ef471566fa2d0ce9faeec929fbcf";
+    sha256 = "IJMUJc817EDWIRqqkCuwAcSw7gcgCkXxPan5fEq1AO0=";
   };
 
   patches = [
@@ -258,6 +258,10 @@ stdenv.mkDerivation (finalAttrs: {
   };
 
   postPatch = ''
+    patchShebangs \
+      app/tests/create_test_env.sh \
+      tools/gimp-mkenums
+
     # Bypass the need for downloading git archive.
     substitute app/git-version.h.in git-version.h \
       --subst-var-by GIMP_GIT_VERSION "GIMP_2.99.?-g${builtins.substring 0 10 finalAttrs.src.rev}" \
