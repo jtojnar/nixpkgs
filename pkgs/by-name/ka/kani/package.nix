@@ -1,5 +1,7 @@
 { lib
 , rustPlatform
+, rustc
+, rust
 , fetchFromGitHub
 }:
 
@@ -15,6 +17,15 @@ rustPlatform.buildRustPackage rec {
   };
 
   cargoHash = "sha256-ow/ioCQ4cGFKEzn3WI8Fi4sBXgGchTXA+/Myv5rnZF0=";
+
+  env = {
+    # kani-compiler expects Nightly compiler installed through rustup.
+    RUSTUP_HOME = "${rustc}";
+    RUSTUP_TOOLCHAIN = "..";
+    # Allow nightly features on stable compiler.
+    RUSTC_BOOTSTRAP = 1;
+    RUST_SRC_PATH = "${rustPlatform.rustLibSrc}";
+  };
 
   meta = with lib; {
     description = "Kani Rust Verifier";
