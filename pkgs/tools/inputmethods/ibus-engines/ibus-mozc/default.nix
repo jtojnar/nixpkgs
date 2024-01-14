@@ -61,13 +61,13 @@ stdenv.mkDerivation rec {
     [
       (fixFedoraPatch "${fedoraSrc}/mozc-build-ninja.patch")
       ## to avoid undefined symbols with clang.
-      (fixFedoraPatch "${fedoraSrc}/mozc-build-gcc.patch")
+      # (fixFedoraPatch "${fedoraSrc}/mozc-build-gcc.patch")
       (fixFedoraPatch "${fedoraSrc}/mozc-build-verbosely.patch")
       (fixFedoraPatch "${fedoraSrc}/mozc-build-id.patch")
-      (fixFedoraPatch "${fedoraSrc}/mozc-build-gcc-common.patch")
-      (fixFedoraPatch "${fedoraSrc}/mozc-use-system-abseil-cpp.patch")
+      # (fixFedoraPatch "${fedoraSrc}/mozc-build-gcc-common.patch")
+      # (fixFedoraPatch "${fedoraSrc}/mozc-use-system-abseil-cpp.patch")
       (fixFedoraPatch "${fedoraSrc}/mozc-build-gyp.patch")
-      (fixFedoraPatch "${fedoraSrc}/mozc-build-new-abseil.patch")
+      # (fixFedoraPatch "${fedoraSrc}/mozc-build-new-abseil.patch")
     ];
 
 
