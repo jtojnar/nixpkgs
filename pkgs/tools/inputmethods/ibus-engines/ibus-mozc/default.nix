@@ -1,27 +1,101 @@
-{ lib, stdenv, fetchFromGitHub, which, ninja, pkg-config, protobuf
-, ibus, gtk2, zinnia, qt5, libxcb, tegaki-zinnia-japanese, python3Packages }:
+{ lib
+, stdenv
+, runCommand
+, patchutils
+, fetchFromGitHub
+, fetchgit
+, which
+, ninja
+, pkg-config
+, abseil-cpp
+, protobuf
+, ibus
+, gtk2
+, zinnia
+, qt5
+, libxcb
+, tegaki-zinnia-japanese
+, python3Packages
+}:
 
 stdenv.mkDerivation rec {
   pname = "ibus-mozc";
-  version = "2.26.4660.102";
+  version = "2.29.5268.102";
 
   src = fetchFromGitHub {
     owner = "google";
     repo = "mozc";
     rev = "refs/tags/${version}";
-    hash = "sha256-sgsfJZALpPHFB5bXu4OkRssViRDaPcgLfEyGhbqvJbI=";
+    hash = "sha256-B7hG8OUaQ1jmmcOPApJlPVcB8h1Rw06W5LAzlTzI9rU=";
     fetchSubmodules = true;
   };
 
+  patches =
+    let
+      # Fedora patches
+      fedoraSrc = fetchgit {
+        url = "https://src.fedoraproject.org/rpms/mozc.git";
+        rev = "2f3d6bf3b31dc4f42026ac3b9eb0067b7d3a771e";
+        hash = "sha256-30t36O9zvToK73ruSvhDJ4MecrbxFryjKOmDKAiKWZM=";
+      };
+
+      fixFedoraPatch =
+        patch:
+        runCommand
+          (builtins.baseNameOf patch)
+          {
+            nativeBuildInputs = [
+              patchutils
+            ];
+            inherit patch;
+          }
+          ''
+            filterdiff \
+              --strip=1 \
+              --addoldprefix=a/src/ \
+              --addnewprefix=b/src/ \
+              --clean \
+              "$patch" > "$out"
+          '';
+    in
+    [
+      (fixFedoraPatch "${fedoraSrc}/mozc-build-ninja.patch")
+      ## to avoid undefined symbols with clang.
+      (fixFedoraPatch "${fedoraSrc}/mozc-build-gcc.patch")
+      (fixFedoraPatch "${fedoraSrc}/mozc-build-verbosely.patch")
+      (fixFedoraPatch "${fedoraSrc}/mozc-build-id.patch")
+      (fixFedoraPatch "${fedoraSrc}/mozc-build-gcc-common.patch")
+      (fixFedoraPatch "${fedoraSrc}/mozc-use-system-abseil-cpp.patch")
+      (fixFedoraPatch "${fedoraSrc}/mozc-build-gyp.patch")
+      (fixFedoraPatch "${fedoraSrc}/mozc-build-new-abseil.patch")
+    ];
+
+
   nativeBuildInputs = [
-    which ninja python3Packages.python python3Packages.six
-    python3Packages.gyp pkg-config qt5.wrapQtAppsHook
+    which
+    ninja
+    python3Packages.python
+    python3Packages.six
+    python3Packages.gyp
+    pkg-config
+    qt5.wrapQtAppsHook
   ];
 
-  buildInputs = [ protobuf ibus gtk2 zinnia qt5.qtbase libxcb ];
+  buildInputs = [
+    abseil-cpp
+    protobuf
+    ibus
+    gtk2
+    zinnia
+    qt5.qtbase
+    libxcb
+  ];
 
   postUnpack = lib.optionalString stdenv.isLinux ''
-    sed -i 's/-lc++/-lstdc++/g' $sourceRoot/src/gyp/common.gypi
+    # sed -i 's/-lc++/-lstdc++/g' $sourceRoot/src/gyp/common.gypi
+
+    # Avoid accidentally using vendored deps.
+    rm -rf third_party/abseil-cpp
   '';
 
   configurePhase = ''
