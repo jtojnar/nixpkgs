@@ -2,9 +2,15 @@
   lib,
   stdenv,
   autoconf,
+  meson,
+  doxygen,
+  sphinx,
+  ninja,
+  gobject-introspection,
   automake,
   fetchFromGitHub,
   glib,
+  gegl,
   intltool,
   json_c,
   libtool,
@@ -12,6 +18,9 @@
   python3,
 }:
 
+let
+  withMeson = true;
+in
 stdenv.mkDerivation rec {
   pname = "libmypaint";
   version = "1.6.1";
@@ -21,27 +30,36 @@ stdenv.mkDerivation rec {
     "dev"
   ];
 
-  src = fetchFromGitHub {
-    owner = "mypaint";
-    repo = "libmypaint";
-    rev = "v${version}";
-    sha256 = "1ppgpmnhph9h8ayx9776f79a0bxbdszfw9c6bw7c3ffy2yk40178";
-  };
+  src = /home/jtojnar/Projects/libmypaint;
 
-  strictDeps = true;
-
-  nativeBuildInputs = [
-    autoconf
-    automake
-    glib # AM_GLIB_GNU_GETTEXT
-    intltool
-    libtool
-    pkg-config
-    python3
-  ];
+  nativeBuildInputs =
+    (
+      if withMeson then
+        [
+          meson
+          ninja
+        ]
+      else
+        [
+          autoconf
+          automake
+          glib # AM_GLIB_GNU_GETTEXT
+          intltool
+          libtool
+        ]
+    )
+    ++ [
+      doxygen
+      sphinx
+      python3.pkgs.breathe
+      gobject-introspection
+      pkg-config
+      python3
+    ];
 
   buildInputs = [
     glib
+    gegl
   ];
 
   # for libmypaint.pc
@@ -49,9 +67,14 @@ stdenv.mkDerivation rec {
     json_c
   ];
 
+  configureFlags = [
+    "--enable-docs"
+    "--enable-gegl"
+  ];
+
   doCheck = true;
 
-  preConfigure = "./autogen.sh";
+  preConfigure = if !withMeson then "./autogen.sh" else null;
 
   meta = with lib; {
     homepage = "http://mypaint.org/";
