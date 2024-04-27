@@ -1,0 +1,23 @@
+diff --git a/configure.ac b/configure.ac
+index 0c29576..4fc94aa 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -27,8 +27,6 @@ src/Makefile
+ src/libiff.pc
+ src/libiff/ifftypes.h
+ src/libiff/Makefile
+-src/iffjoin/Makefile
+-src/iffpp/Makefile
+ tests/Makefile
+ ])
+ AC_OUTPUT
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 1b3db17..cfce91d 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -1,4 +1,4 @@
+-SUBDIRS = libiff iffjoin iffpp
++SUBDIRS = libiff
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = libiff.pc

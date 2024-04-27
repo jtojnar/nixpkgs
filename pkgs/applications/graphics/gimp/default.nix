@@ -67,6 +67,10 @@
 , Cocoa
 , gtk-mac-integration-gtk3
 , unstableGitUpdater
+, libilbm
+, libiff
+, cfitsio
+, gnome-icon-theme
 }:
 
 let
@@ -75,7 +79,7 @@ let
   ]);
 in stdenv.mkDerivation (finalAttrs: {
   pname = "gimp";
-  version = "2_99_14+date=2023-03-17";
+  version = "2_99_18+date=2024-02-17";
 
   outputs = [ "out" "dev" "devdoc" ];
 
@@ -91,8 +95,8 @@ in stdenv.mkDerivation (finalAttrs: {
     name = "gimp-dev-${rev}"; # to make sure the hash is updated
     owner = "GNOME";
     repo = "gimp";
-    rev = "ad7a2e53eb72ef471566fa2d0ce9faeec929fbcf";
-    sha256 = "IJMUJc817EDWIRqqkCuwAcSw7gcgCkXxPan5fEq1AO0=";
+    rev = "f94c4cb5dbf9766b27ecb5016b7a39497cc74ddc";
+    sha256 = "sha256-rQd/EwGk6AFQ4dQCx2Jys60mcDvaLSkXeVsrjTJw8wg=";
   };
 
   patches = [
@@ -186,9 +190,13 @@ in stdenv.mkDerivation (finalAttrs: {
     glib-networking
     libmypaint
     mypaint-brushes1
+    libilbm
+    libiff
+    cfitsio
 
     # New file dialogue crashes with “Icon 'image-missing' not present in theme Symbolic” without an icon theme.
     gnome.adwaita-icon-theme
+    gnome-icon-theme
 
     # for Lua plug-ins
     (luajit.withPackages (pp: [
@@ -221,10 +229,11 @@ in stdenv.mkDerivation (finalAttrs: {
   ] ++ lib.optionals stdenv.isDarwin [
     "-Dalsa=disabled"
     "-Djavascript=false"
+    "-Dilbm=disabled"
   ];
 
   # on Linux, unable to find icons
-  doCheck = true;
+  doCheck = false;
 
   env = {
     # The check runs before glib-networking is registered

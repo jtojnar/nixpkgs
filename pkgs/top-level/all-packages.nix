@@ -39605,4 +39605,9 @@ with pkgs;
   udict = callPackage ../applications/misc/udict { };
 
   duden = callPackage ../applications/misc/duden { };
+
+  libiff = callPackage ../development/libraries/libiff { };
+
+  libilbm = callPackage ../development/libraries/libilbm { };
+
 }

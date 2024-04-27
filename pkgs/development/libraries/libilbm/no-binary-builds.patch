@@ -1,0 +1,25 @@
+diff --git a/configure.ac b/configure.ac
+index 343c766..fe1c282 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -28,10 +28,6 @@ doc/Makefile
+ src/libilbm.pc
+ src/Makefile
+ src/libilbm/Makefile
+-src/ilbmpack/Makefile
+-src/ilbmpp/Makefile
+-src/acbm2ilbm/Makefile
+-src/ilbm2acbm/Makefile
+ tests/Makefile
+ ])
+ AC_OUTPUT
+diff --git a/src/Makefile.am b/src/Makefile.am
+index cf17b84..bdcf3c6 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -1,4 +1,4 @@
+-SUBDIRS = libilbm ilbmpack ilbmpp acbm2ilbm ilbm2acbm
++SUBDIRS = libilbm
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = libilbm.pc
