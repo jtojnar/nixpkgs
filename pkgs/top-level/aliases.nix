@@ -20,36 +20,17 @@ lib: self: super:
 with self;
 
 let
-  # Removing recurseForDerivation prevents derivations of aliased attribute set
-  # to appear while listing all the packages available.
-  removeRecurseForDerivations = alias: with lib;
-    if alias.recurseForDerivations or false
-    then removeAttrs alias [ "recurseForDerivations" ]
-    else alias;
-
-  # Disabling distribution prevents top-level aliases for non-recursed package
-  # sets from building on Hydra.
-  removeDistribute = alias: with lib;
-    if isDerivation alias then
-      dontDistribute alias
-    else alias;
-
   # Make sure that we are not shadowing something from all-packages.nix.
-  checkInPkgs = n: alias:
-    if builtins.hasAttr n super
-    then throw "Alias ${n} is still in all-packages.nix"
-    else alias;
+  checkNoShadowing = aliases:
+    let
+      shadowed = builtins.filter (n: builtins.hasAttr n super) (builtins.attrNames aliases);
+    in
+    assert lib.assertMsg (shadowed == []) "The following aliases are still present in all-packages.nix ${lib.concatMapStringsSep ", " (n: "`${n}`") shadowed}";
+    aliases;
 
-  mapAliases = aliases:
-    lib.mapAttrs
-      (n: alias:
-        removeDistribute
-          (removeRecurseForDerivations
-            (checkInPkgs n alias)))
-      aliases;
 in
 
-mapAliases ({
+checkNoShadowing ({
   # Added 2018-07-16 preserve, reason: forceSystem should not be used directly in Nixpkgs.
   forceSystem = system: _:
     (import self.path { localSystem = { inherit system; }; });
