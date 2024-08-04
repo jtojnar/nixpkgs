@@ -17,6 +17,8 @@
   python3,
   swig,
   wrapGAppsHook3,
+  dbus,
+  xvfb-run,
 }:
 
 let
@@ -32,51 +34,14 @@ buildPythonApplication rec {
   version = "2.0.1";
   format = "other";
 
-  src = fetchFromGitHub {
-    owner = "mypaint";
-    repo = "mypaint";
-    tag = "v${version}";
-    hash = "sha256-rVKcxzWZRLcuxK8xRyRgvitXAh4uOEyqHswLeTdA2Mk=";
-    fetchSubmodules = true;
-  };
-
-  patches = [
-    # Fix build due to setuptools issue.
-    # https://github.com/mypaint/mypaint/pull/1183
-    (fetchpatch {
-      url = "https://github.com/mypaint/mypaint/commit/423950bec96d6057eac70442de577364d784a847.patch";
-      hash = "sha256-OxJJOi20bFMRibL59zx6svtMrkgeMYyEvbdSXbZHqpc=";
-    })
-    # https://github.com/mypaint/mypaint/pull/1193
-    (fetchpatch {
-      name = "python-3.11-compatibility.patch";
-      url = "https://github.com/mypaint/mypaint/commit/032a155b72f2b021f66a994050d83f07342d04af.patch";
-      hash = "sha256-EI4WJbpZrCtFMKd6QdXlWpRpIHi37gJffDjclzTLaLc=";
-    })
-    # Fix drag-n-drop file opening
-    (fetchpatch {
-      url = "https://github.com/mypaint/mypaint/commit/66b2ba98bd953afa73d0d6ac71040b14a4ea266b.patch";
-      hash = "sha256-4AWXD/JMpNA5otl2ad1ZLVPW49pycuOXGcgfzvj0XEE=";
-    })
-    # Fix crash with locked layer
-    (fetchpatch {
-      url = "https://github.com/mypaint/mypaint/commit/0b720f8867f18acccc8e6ec770a9cc494aa81dcf.patch";
-      hash = "sha256-ahYeERiMLA8yKIXQota6/ApAbOW0XwsHO2JkEEMm1Ow=";
-    })
-    # Refactoring for the following patch to apply.
-    (fetchpatch {
-      url = "https://github.com/mypaint/mypaint/commit/d7d2496401a112a178d5fa2e491f0cc7537d24cd.patch";
-      hash = "sha256-dIW6qWqY96+bsUDQQtGtjENvypnh//Ep3xW+wooCJ14=";
-      includes = [
-        "gui/colors/hcywheel.py"
-      ];
-    })
-    # Fix crash with hcy wheel masking
-    (fetchpatch {
-      url = "https://github.com/mypaint/mypaint/commit/5496b1cd1113fcd46230d87760b7e6b51cc747bc.patch";
-      hash = "sha256-h+sE1LW04xDU2rofH5KqXsY1M0jacfBNBC+Zb0i6y1w=";
-    })
-  ];
+  # src = fetchFromGitHub {
+  #   owner = "mypaint";
+  #   repo = "mypaint";
+  #   rev = "c9b9e31c1d969cab6e5275aba47b9bffc0ad6436";
+  #   hash = "sha256-g56TFmAmKZGqgpoMl53eNzjNG25IQP4BRsrhrzoIdVo=";
+  #   fetchSubmodules = true;
+  # };
+  src = /home/jtojnar/Projects/mypaint;
 
   nativeBuildInputs = [
     gettext
@@ -112,6 +77,15 @@ buildPythonApplication rec {
 
   nativeCheckInputs = [
     gtk3
+    python3.pkgs.nose
+    python3.pkgs.isort
+    python3.pkgs.black
+    python3.pkgs.flake8
+    python3.pkgs.pytest
+    python3.pkgs.flake8-bugbear
+
+    dbus
+    xvfb-run
   ];
 
   buildPhase = ''
@@ -137,6 +111,12 @@ buildPythonApplication rec {
   checkPhase = ''
     runHook preCheck
 
+    pwd
+    PYTHONPATH=$out/lib/mypaint:$PYTHONPATH \
+    HOME=$TEMPDIR NO_AT_BRIDGE=1 \
+      xvfb-run -s '-screen 0 800x600x24' dbus-run-session \
+        --config-file=${dbus}/share/dbus-1/session.conf \
+      nosetests --with-doctest --verbosity=2
     HOME=$TEMPDIR ${python3.interpreter} setup.py test
 
     runHook postCheck
