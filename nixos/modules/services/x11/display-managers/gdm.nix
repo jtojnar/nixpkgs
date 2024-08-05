@@ -313,7 +313,7 @@ in
         auth      required      pam_succeed_if.so uid >= 1000 quiet
         ${lib.optionalString pamCfg.login.enableGnomeKeyring ''
           auth       [success=ok default=1]      ${pkgs.gnome.gdm}/lib/security/pam_gdm.so
-          auth       optional                    ${pkgs.gnome-keyring}/lib/security/pam_gnome_keyring.so
+          auth       optional                    ${pkgs.gnome-keyring.override { enableDev = true; }}/lib/security/pam_gnome_keyring.so debug
         ''}
         auth      required      pam_permit.so
 
@@ -337,7 +337,7 @@ in
         auth       required                    pam_env.so
         ${lib.optionalString pamCfg.login.enableGnomeKeyring ''
           auth       [success=ok default=1]      ${pkgs.gnome.gdm}/lib/security/pam_gdm.so
-          auth       optional                    ${pkgs.gnome-keyring}/lib/security/pam_gnome_keyring.so
+          auth       optional                    ${pkgs.gnome-keyring.override { enableDev = true; }}/lib/security/pam_gnome_keyring.so debug
         ''}
 
         account    include                     login

@@ -2,6 +2,8 @@
 , stdenv
 , fetchurl
 , pkg-config
+, enableDev ? false
+, autoreconfHook
 , dbus
 , libgcrypt
 , pam
@@ -27,10 +29,14 @@ stdenv.mkDerivation rec {
 
   outputs = [ "out" "dev" ];
 
-  src = fetchurl {
-    url = "mirror://gnome/sources/gnome-keyring/${lib.versions.major version}/${pname}-${version}.tar.xz";
-    hash = "sha256-vybJZriot/MoXsyLs+RnucIPlTW5TcRRycVZ3c/2GSU=";
-  };
+  src =
+    if enableDev then
+      /home/jtojnar/Projects/gnome-keyring
+    else
+      fetchurl {
+        url = "mirror://gnome/sources/gnome-keyring/${lib.versions.major version}/${pname}-${version}.tar.xz";
+        hash = "sha256-vybJZriot/MoXsyLs+RnucIPlTW5TcRRycVZ3c/2GSU=";
+      };
 
   nativeBuildInputs = [
     pkg-config
@@ -39,6 +45,8 @@ stdenv.mkDerivation rec {
     docbook-xsl-nons
     docbook_xml_dtd_43
     wrapGAppsHook3
+  ] ++ lib.optionals enableDev [
+    autoreconfHook
   ];
 
   buildInputs = [

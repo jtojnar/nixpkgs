@@ -259,17 +259,17 @@ in
       programs.dconf.enable = true;
       security.polkit.enable = true;
       services.accounts-daemon.enable = true;
-      services.dleyna-renderer.enable = mkDefault true;
-      services.dleyna-server.enable = mkDefault true;
-      services.power-profiles-daemon.enable = mkDefault true;
+      # services.dleyna-renderer.enable = mkDefault true;
+      # services.dleyna-server.enable = mkDefault true;
+      # services.power-profiles-daemon.enable = mkDefault true;
       services.gnome.at-spi2-core.enable = true;
-      services.gnome.evolution-data-server.enable = true;
+      # services.gnome.evolution-data-server.enable = true;
       services.gnome.gnome-keyring.enable = true;
-      services.gnome.gnome-online-accounts.enable = mkDefault true;
-      services.gnome.gnome-online-miners.enable = true;
-      services.gnome.tracker-miners.enable = mkDefault true;
-      services.gnome.tracker.enable = mkDefault true;
-      services.hardware.bolt.enable = mkDefault true;
+      # services.gnome.gnome-online-accounts.enable = mkDefault true;
+      # services.gnome.gnome-online-miners.enable = true;
+      # services.gnome.tracker-miners.enable = mkDefault true;
+      # services.gnome.tracker.enable = mkDefault true;
+      # services.hardware.bolt.enable = mkDefault true;
       # TODO: Enable once #177946 is resolved
       # services.packagekit.enable = mkDefault true;
       services.udisks2.enable = true;
@@ -321,11 +321,11 @@ in
 
       services.colord.enable = mkDefault true;
       services.gnome.glib-networking.enable = true;
-      services.gnome.gnome-browser-connector.enable = mkDefault true;
-      services.gnome.gnome-initial-setup.enable = mkDefault true;
-      services.gnome.gnome-remote-desktop.enable = mkDefault true;
+      # services.gnome.gnome-browser-connector.enable = mkDefault true;
+      # services.gnome.gnome-initial-setup.enable = mkDefault true;
+      # services.gnome.gnome-remote-desktop.enable = mkDefault true;
       services.gnome.gnome-settings-daemon.enable = true;
-      services.gnome.gnome-user-share.enable = mkDefault true;
+      # services.gnome.gnome-user-share.enable = mkDefault true;
       services.gnome.rygel.enable = mkDefault true;
       services.gvfs.enable = true;
       services.system-config-printer.enable = (lib.mkIf config.services.printing.enable (mkDefault true));
@@ -380,7 +380,7 @@ in
             gnome-color-manager
             gnome-control-center
             gnome-shell-extensions
-            pkgs.gnome-tour # GNOME Shell detects the .desktop file on first log-in.
+            # pkgs.gnome-tour # GNOME Shell detects the .desktop file on first log-in.
             pkgs.gnome-user-docs
             pkgs.orca
             pkgs.glib # for gsettings program

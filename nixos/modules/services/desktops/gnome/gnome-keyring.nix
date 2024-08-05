@@ -8,6 +8,7 @@
 }:
 let
   cfg = config.services.gnome.gnome-keyring;
+  package = pkgs.gnome-keyring.override { enableDev = true; };
 in
 {
 
@@ -26,14 +27,14 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.gnome-keyring ];
+    environment.systemPackages = [ package ];
 
     services.dbus.packages = [
-      pkgs.gnome-keyring
+      package
       pkgs.gcr
     ];
 
-    xdg.portal.extraPortals = [ pkgs.gnome-keyring ];
+    xdg.portal.extraPortals = [ package ];
 
     security.pam.services.login.enableGnomeKeyring = true;
 
@@ -41,7 +42,7 @@ in
       owner = "root";
       group = "root";
       capabilities = "cap_ipc_lock=ep";
-      source = "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon";
+      source = "${package}/bin/gnome-keyring-daemon";
     };
   };
 }
