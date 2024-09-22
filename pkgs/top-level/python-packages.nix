@@ -8075,6 +8075,8 @@ self: super: with self; {
 
   meep = callPackage ../development/python-modules/meep { };
 
+  megaparsy = callPackage ../development/python-modules/megaparsy { };
+
   meilisearch = callPackage ../development/python-modules/meilisearch { };
 
   meinheld = callPackage ../development/python-modules/meinheld { };
