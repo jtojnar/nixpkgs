@@ -4643,6 +4643,8 @@ self: super: with self; {
 
   flake8 = callPackage ../development/python-modules/flake8 { };
 
+  flake8-isort = callPackage ../development/python-modules/flake8-isort { };
+
   flake8-length = callPackage ../development/python-modules/flake8-length { };
 
   flake8-class-newline = callPackage ../development/python-modules/flake8-class-newline { };
