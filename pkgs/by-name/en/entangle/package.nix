@@ -28,12 +28,12 @@
   libraw,
   libselinux,
   libsepol,
+  libsysprof-capture,
   lerc,
   libthai,
   libunwind,
   libxkbcommon,
   orc,
-  pcre,
   pcre2,
   udev,
   util-linux,
@@ -96,11 +96,11 @@ stdenv.mkDerivation (finalAttrs: {
       libraw
       libselinux
       libsepol
+      libsysprof-capture # required by glib-2.0
       libthai
       libunwind
       libxkbcommon
       orc
-      pcre # required by libselinux before we USE_PCRE2
       pcre2 # required by glib-2.0
       udev
       util-linux
