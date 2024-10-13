@@ -9,7 +9,7 @@
   ninja,
   perl,
   python3,
-  pkgconf,
+  pkg-config,
   wrapGAppsHook3,
   at-spi2-core,
   dbus,
@@ -28,18 +28,15 @@
   libraw,
   libselinux,
   libsepol,
-  libsysprof-capture,
   lerc,
   libthai,
   libunwind,
   libxkbcommon,
   orc,
-  pcre2,
   udev,
   util-linux,
   xorg,
   zstd,
-  cmake,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -70,10 +67,9 @@ stdenv.mkDerivation (finalAttrs: {
     ninja
     perl # for pod2man and build scripts
     python3 # for build scripts
-    pkgconf
+    pkg-config
     wrapGAppsHook3
     gobject-introspection
-    cmake
   ];
 
   buildInputs =
@@ -96,12 +92,10 @@ stdenv.mkDerivation (finalAttrs: {
       libraw
       libselinux
       libsepol
-      libsysprof-capture # required by glib-2.0
       libthai
       libunwind
       libxkbcommon
       orc
-      pcre2 # required by glib-2.0
       udev
       util-linux
       zstd
