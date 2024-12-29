@@ -63,8 +63,8 @@ lib.makeScope pkgs.newScope (
 
           # Override installation paths.
           env = {
-            PKG_CONFIG_GIMP_2_0_GIMPLIBDIR = "${placeholder "out"}/${gimp.targetLibDir}";
-            PKG_CONFIG_GIMP_2_0_GIMPDATADIR = "${placeholder "out"}/${gimp.targetDataDir}";
+            PKG_CONFIG_GIMP_3_0_GIMPLIBDIR = "${placeholder "out"}/${gimp.targetLibDir}";
+            PKG_CONFIG_GIMP_3_0_GIMPDATADIR = "${placeholder "out"}/${gimp.targetDataDir}";
           } // attrs.env or { };
         }
       );

@@ -3,6 +3,7 @@
   lib,
   fetchurl,
   fetchFromGitHub,
+  fetchpatch,
   substituteAll,
   meson,
   ninja,
@@ -114,6 +115,13 @@ stdenv.mkDerivation (finalAttrs: {
       src = ./tests-dbus-conf.patch;
       session_conf = "${dbus.out}/share/dbus-1/session.conf";
     })
+
+    # Fix pkg-config file.
+    # https://gitlab.gnome.org/GNOME/gimp/-/merge_requests/2037
+    (fetchpatch {
+      url = "https://gitlab.gnome.org/GNOME/gimp/-/commit/a18e1806dbc9b180aefabb2c0fae43493f1ef14a.patch";
+      hash = "sha256-BUrPm9lB/aiybB2Sd3TKlJ+59ITMZlNUBXJP5ZdLQ44=";
+    })
   ];
 
   nativeBuildInputs =
@@ -208,9 +216,12 @@ stdenv.mkDerivation (finalAttrs: {
       libgudev
     ];
 
-  # needed by gimp-2.0.pc
   propagatedBuildInputs = [
+    # needed by gimp-3.0.pc
     gegl
+    cairo
+    pango
+    gexiv2
   ];
 
   mesonFlags =
@@ -302,7 +313,7 @@ stdenv.mkDerivation (finalAttrs: {
   passthru = {
     # The declarations for `gimp-with-plugins` wrapper,
     # used for determining plug-in installation paths
-    majorVersion = "2.99";
+    majorVersion = "3.0";
     targetLibDir = "lib/gimp/${finalAttrs.passthru.majorVersion}";
     targetDataDir = "share/gimp/${finalAttrs.passthru.majorVersion}";
     targetPluginDir = "${finalAttrs.passthru.targetLibDir}/plug-ins";
